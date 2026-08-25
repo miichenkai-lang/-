@@ -1,0 +1,125 @@
+export const INTERIORS = {
+  breakfast: {
+    name: "早餐店",
+    bg: "#f5e6d0",
+    items: [
+      { id: "bread", icon: "🍞", name: "果汁麵包", desc: "回復 30 HP", x: 25, y: 40, effect: { heal: 30 }, price: 0 },
+      { id: "omelette", icon: "🍳", name: "水果蛋餅", desc: "回復 20 HP", x: 50, y: 40, effect: { heal: 20 }, price: 0 },
+      { id: "juice", icon: "🧃", name: "新鮮果汁", desc: "回復 15 HP", x: 75, y: 40, effect: { heal: 15 }, price: 0 },
+      { id: "secret_recipe", icon: "📜", name: "祕方食譜", desc: "彩蛋！回復 50 HP", x: 85, y: 70, effect: { heal: 50 }, price: 0, hidden: true },
+      { id: "secret_cat", icon: "🐱", name: "角落的貓咪", desc: "彩蛋！牠蹭了蹭你，心情變好了", x: 15, y: 70, effect: { heal: 10 }, price: 0, hidden: true },
+      { id: "old_radio", icon: "📻", name: "老舊收音機", desc: "彩蛋！播放懷舊音樂", x: 90, y: 30, effect: null, price: 0, hidden: true },
+    ],
+    beds: [{ x: 15, y: 75, name: "沙發", desc: "休息一下回復精力", effect: { heal: 50 } }],
+  },
+  drinks: {
+    name: "飲料店",
+    bg: "#e8f4f8",
+    items: [
+      { id: "lemon", icon: "🍋", name: "檸檬汁", desc: "回復 25 HP", x: 25, y: 40, effect: { heal: 25 }, price: 0 },
+      { id: "tea", icon: "🍵", name: "蜂蜜綠茶", desc: "回復 20 HP", x: 50, y: 40, effect: { heal: 20 }, price: 0 },
+      { id: "sparkling", icon: "⚡", name: "氣泡水", desc: "速度 +30%（30 秒）", x: 75, y: 40, effect: { speedMul: 1.3, duration: 30 }, price: 0 },
+      { id: "secret_cocktail", icon: "🍹", name: "祕密雞尾酒", desc: "彩蛋！全能力 +15%（45 秒）", x: 85, y: 70, effect: { attackMul: 1.15, defenseMul: 1.15, speedMul: 1.15, duration: 45 }, price: 0, hidden: true },
+      { id: "secret_menu", icon: "📋", name: "隱藏菜單", desc: "彩蛋！原來還有這種飲料", x: 10, y: 25, effect: { heal: 30 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  icecream: {
+    name: "冰淇淋店",
+    bg: "#fce4ec",
+    items: [
+      { id: "mango_ice", icon: "🍦", name: "芒果冰淇淋", desc: "回復 30 HP", x: 30, y: 40, effect: { heal: 30 }, price: 0 },
+      { id: "strawberry_ice", icon: "🍨", name: "草莓聖代", desc: "回復 35 HP", x: 60, y: 40, effect: { heal: 35 }, price: 0 },
+      { id: "secret_sundae", icon: "🌈", name: "彩虹聖代", desc: "彩蛋！HP 全滿", x: 85, y: 70, effect: { heal: 999 }, price: 0, hidden: true },
+      { id: "secret_cone", icon: "🥖", name: "掉在地上的甜筒", desc: "彩蛋！快撿起來吃掉", x: 45, y: 65, effect: { heal: 5 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  snacks: {
+    name: "小吃攤",
+    bg: "#fff3e0",
+    items: [
+      { id: "skewer", icon: "🍖", name: "烤肉串", desc: "攻擊 +25%（45 秒）", x: 30, y: 40, effect: { attackMul: 1.25, duration: 45 }, price: 0 },
+      { id: "fruit_stick", icon: "🍡", name: "水果串", desc: "回復 20 HP", x: 60, y: 40, effect: { heal: 20 }, price: 0 },
+      { id: "secret_grill", icon: "🔥", name: "隱藏烤肉", desc: "彩蛋！攻擊 +40%（30 秒）", x: 85, y: 70, effect: { attackMul: 1.4, duration: 30 }, price: 0, hidden: true },
+      { id: "secret_firefly", icon: "✨", name: "火爐裡的火花", desc: "彩蛋！溫暖的感覺", x: 15, y: 30, effect: { heal: 15 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  dumplings: {
+    name: "點心攤",
+    bg: "#fce4ec",
+    items: [
+      { id: "dumpling", icon: "🥟", name: "手工水餃", desc: "防禦 +30%（45 秒）", x: 30, y: 40, effect: { defenseMul: 1.3, duration: 45 }, price: 0 },
+      { id: "bun", icon: "🥖", name: "豆沙包", desc: "回復 25 HP", x: 60, y: 40, effect: { heal: 25 }, price: 0 },
+      { id: "secret_dumpling", icon: "✨", name: "黃金水餃", desc: "彩蛋！防禦 +50%（60 秒）", x: 85, y: 70, effect: { defenseMul: 1.5, duration: 60 }, price: 0, hidden: true },
+      { id: "secret_flour", icon: "🌾", name: "麵粉袋裡的寶物", desc: "彩蛋！找到藏起來的錢", x: 80, y: 25, effect: { coins: 30 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  juicebar: {
+    name: "果汁吧",
+    bg: "#e8f5e9",
+    items: [
+      { id: "mixed", icon: "🥤", name: "綜合果汁", desc: "回復 40 HP", x: 30, y: 40, effect: { heal: 40 }, price: 0 },
+      { id: "smoothie", icon: "🥛", name: "水果奶昔", desc: "回復 50 HP", x: 60, y: 40, effect: { heal: 50 }, price: 0 },
+      { id: "secret_elixir", icon: "🌟", name: "活力仙丹", desc: "彩蛋！HP 全滿 + 全能力 +20%", x: 85, y: 70, effect: { heal: 999, attackMul: 1.2, defenseMul: 1.2, speedMul: 1.2, duration: 60 }, price: 0, hidden: true },
+      { id: "secret_fruit", icon: "🍎", name: "藏在冰箱裡的水果", desc: "彩蛋！新鮮的水果", x: 15, y: 30, effect: { heal: 20 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  dessert: {
+    name: "甜品屋",
+    bg: "#fce4ec",
+    items: [
+      { id: "cake", icon: "🍰", name: "水果蛋糕", desc: "回復 35 HP", x: 30, y: 40, effect: { heal: 35 }, price: 0 },
+      { id: "pudding", icon: "🍮", name: "焦糖布丁", desc: "回復 30 HP", x: 60, y: 40, effect: { heal: 30 }, price: 0 },
+      { id: "secret_cake", icon: "🎂", name: "生日蛋糕", desc: "彩蛋！回復 100 HP + 50 金幣", x: 85, y: 70, effect: { heal: 100, coins: 50 }, price: 0, hidden: true },
+      { id: "secret_candle", icon: "🕯️", name: "神秘蠟燭", desc: "彩蛋！許個願吧", x: 50, y: 25, effect: { heal: 25, coins: 25 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  itemshop: {
+    name: "道具店",
+    bg: "#e3f2fd",
+    items: [
+      { id: "shield", icon: "🛡️", name: "果凍護盾", desc: "防禦 +40%（60 秒）", x: 30, y: 40, effect: { defenseMul: 1.4, duration: 60 }, price: 0 },
+      { id: "energy", icon: "💥", name: "能量果凍", desc: "速度 +35%（45 秒）", x: 60, y: 40, effect: { speedMul: 1.35, duration: 45 }, price: 0 },
+      { id: "secret_orb", icon: "🔮", name: "神秘寶珠", desc: "彩蛋！全能力 +30%（90 秒）", x: 85, y: 70, effect: { attackMul: 1.3, defenseMul: 1.3, speedMul: 1.3, duration: 90 }, price: 0, hidden: true },
+      { id: "secret_gem", icon: "💎", name: "櫃子裡的寶石", desc: "彩蛋！閃閃發光的寶石", x: 10, y: 25, effect: { coins: 75 }, price: 0, hidden: true },
+    ],
+    beds: [],
+  },
+  house: {
+    name: "民房",
+    bg: "#efebe9",
+    items: [
+      { id: "water", icon: "💧", name: "白開水", desc: "回復 10 HP", x: 70, y: 45, effect: { heal: 10 }, price: 0 },
+      { id: "secret_treasure", icon: "💰", name: "藏在床下的寶箱", desc: "彩蛋！獲得 100 金幣", x: 20, y: 75, effect: { coins: 100 }, price: 0, hidden: true },
+      { id: "secret_photo", icon: "📷", name: "牆上的舊照片", desc: "彩蛋！回憶湧上心頭", x: 80, y: 25, effect: { heal: 30 }, price: 0, hidden: true },
+      { id: "secret_letter", icon: "💌", name: "抽屜裡的信", desc: "彩蛋！一封神秘的信", x: 35, y: 30, effect: { coins: 50 }, price: 0, hidden: true },
+      { id: "secret_flower", icon: "🌸", name: "窗台上的花", desc: "彩蛋！花朵散發芬芳", x: 85, y: 35, effect: { heal: 20 }, price: 0, hidden: true },
+    ],
+    beds: [
+      { x: 25, y: 65, name: "床", desc: "睡一覺恢復全部 HP", effect: { heal: 999 } },
+      { x: 75, y: 70, name: "書架", desc: "看看有什麼書", effect: null },
+    ],
+  },
+};
+
+export const HOUSE_TRIGGERS = [
+  { x: -14, z: -3.6, type: "breakfast", doorZ: -2.8 },
+  { x: -17.5, z: -3.6, type: "drinks", doorZ: -2.8 },
+  { x: -21, z: -3.6, type: "icecream", doorZ: -2.8 },
+  { x: -24.5, z: -3.6, type: "snacks", doorZ: -2.8 },
+  { x: -15.5, z: 3.6, type: "dumplings", doorZ: 2.8 },
+  { x: -19, z: 3.6, type: "juicebar", doorZ: 2.8 },
+  { x: -22.5, z: 3.6, type: "dessert", doorZ: 2.8 },
+  { x: 27, z: -4, type: "itemshop", doorZ: -2.8 },
+  { x: -30, z: 0, type: "house", doorZ: 1.8 },
+  { x: 0, z: -33, type: "house", doorZ: -31.5 },
+  { x: -5, z: -36, type: "house", doorZ: -34.5 },
+  { x: 5, z: -36, type: "house", doorZ: -34.5 },
+  { x: -13, z: -40, type: "house", doorZ: -38.5 },
+  { x: 14, z: -41, type: "house", doorZ: -39.5 },
+];

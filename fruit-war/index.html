@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>果子大戰 - 果汁島</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="hud" class="hidden">
+    <div id="hud-top-left" class="panel">
+      <h1>果子大戰</h1>
+      <div class="subtitle">Phase 4 · NPC 與時間系統</div>
+    </div>
+
+    <div id="hud-clock" class="panel">🕐 <span id="stat-time">-</span></div>
+
+    <div id="minimap-container">
+      <canvas id="minimap" width="180" height="180"></canvas>
+      <div id="minimap-label">果汁島</div>
+    </div>
+
+    <div id="hud-vitals">
+      <div id="hp-bar">
+        <div id="hp-fill"></div>
+        <span id="hp-text">-</span>
+      </div>
+      <div class="panel" id="coins-panel">💰 <span id="stat-coins">0</span></div>
+      <div id="buff-row"></div>
+    </div>
+
+    <div id="hud-bottom-left" class="panel">
+      <div class="stat">FPS<span id="stat-fps">-</span></div>
+      <div class="stat">位置<span id="stat-pos">-</span></div>
+    </div>
+
+    <div id="hud-controls" class="panel">
+      <div><span class="key">WASD</span>移動</div>
+      <div><span class="key">滑鼠</span>轉視角</div>
+      <div><span class="key">Space</span>跳躍</div>
+      <div><span class="key">Shift</span>衝刺</div>
+      <div><span class="key">E</span>互動/進入房屋</div>
+      <div><span class="key">Esc</span>放開滑鼠</div>
+    </div>
+  </div>
+
+  <div id="interact-prompt" class="hidden">
+    <span class="key">E</span><span id="prompt-name"></span>
+  </div>
+
+  <div id="dialog-box" class="hidden">
+    <div id="dialog-name"></div>
+    <div id="dialog-text"></div>
+    <div id="dialog-hint"></div>
+  </div>
+
+  <div id="shop-menu" class="hidden">
+    <div id="shop-name">商店</div>
+    <div id="shop-items"></div>
+    <div id="shop-footer">
+      <span id="shop-coins">💰 0</span>
+      <span id="shop-hint"><span class="key">W/S</span>選擇 <span class="key">E</span>購買 <span class="key">Q</span>離開</span>
+    </div>
+  </div>
+
+  <div id="interior-menu" class="hidden">
+    <div id="interior-name">🏠 房屋</div>
+    <div id="interior-visual">
+      <div id="interior-room">
+        <div class="room-wall"></div>
+        <div class="room-floor"></div>
+        <div class="room-furniture chair"></div>
+        <div class="room-furniture table"></div>
+        <div class="room-furniture lamp"></div>
+      </div>
+    </div>
+    <div id="interior-items"></div>
+    <div id="interior-desc"></div>
+    <div id="interior-hint"><span class="key">W/S</span>選擇 <span class="key">E</span>使用 <span class="key">Q</span>離開</div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <div id="lock-overlay">
+    <div class="lock-box">
+      <h2>果子大戰</h2>
+      <p>點擊畫面開始探索果汁島</p>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>載入果汁島中…</p>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
