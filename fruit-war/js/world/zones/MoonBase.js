@@ -189,6 +189,59 @@ export function buildMoonBase(scene, { animate }) {
     group.add(pole);
   }
 
+  const observatory = new THREE.Mesh(
+    new THREE.CylinderGeometry(3, 3, 2.5, 12),
+    baseMat
+  );
+  observatory.position.set(25, 1.25, 8);
+  observatory.castShadow = true;
+  group.add(observatory);
+
+  const observatoryDome = new THREE.Mesh(
+    new THREE.SphereGeometry(3, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.6, metalness: 0.3 })
+  );
+  observatoryDome.position.set(25, 2.5, 8);
+  group.add(observatoryDome);
+
+  const telescope = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12, 0.25, 3.5, 8),
+    new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4, metalness: 0.6 })
+  );
+  telescope.position.set(25, 4, 8);
+  telescope.rotation.z = Math.PI / 4;
+  group.add(telescope);
+
+  const waterTank = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.2, 1.2, 2.5, 10),
+    new THREE.MeshStandardMaterial({ color: 0x5588cc, roughness: 0.5, metalness: 0.3 })
+  );
+  waterTank.position.set(-20, 1.25, -5);
+  waterTank.castShadow = true;
+  group.add(waterTank);
+
+  const waterTankTop = new THREE.Mesh(
+    new THREE.ConeGeometry(1.2, 0.6, 10),
+    new THREE.MeshStandardMaterial({ color: 0x4477aa, roughness: 0.5 })
+  );
+  waterTankTop.position.set(-20, 2.8, -5);
+  group.add(waterTankTop);
+
+  const storage = new THREE.Mesh(
+    new THREE.BoxGeometry(3.5, 2.2, 3.5),
+    baseMat
+  );
+  storage.position.set(-15, 1.1, 8);
+  storage.castShadow = true;
+  group.add(storage);
+
+  const storageDoor = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 1.8, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.7, metalness: 0.4 })
+  );
+  storageDoor.position.set(-15, 0.9, 6.3);
+  group.add(storageDoor);
+
   for (let i = 0; i < 12; i++) {
     const size = 0.4 + rand() * 0.8;
     const rock = new THREE.Mesh(
