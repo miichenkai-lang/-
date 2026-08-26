@@ -43,9 +43,9 @@ export function buildMoonBase(scene, { animate }) {
   moonBase.position.y = -6;
   group.add(moonBase);
 
-  for (let i = 0; i < 28; i++) {
-    const craterR = 1.5 + rand() * 4;
-    const craterD = 0.2 + rand() * 0.5;
+  for (let i = 0; i < 18; i++) {
+    const craterR = 1.5 + rand() * 3.5;
+    const craterD = 0.2 + rand() * 0.4;
     const ang = rand() * Math.PI * 2;
     const dist = 5 + rand() * (MOON_RADIUS - 15);
     const cx = Math.cos(ang) * dist;
@@ -69,7 +69,7 @@ export function buildMoonBase(scene, { animate }) {
   }
 
   const floatingRocks = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 8; i++) {
     const size = 0.6 + rand() * 1.5;
     const rock = new THREE.Mesh(
       new THREE.DodecahedronGeometry(size, 0),
@@ -81,7 +81,7 @@ export function buildMoonBase(scene, { animate }) {
     );
     const ang = rand() * Math.PI * 2;
     const dist = 10 + rand() * (MOON_RADIUS - 20);
-    const baseY = 2 + rand() * 5;
+    const baseY = 2 + rand() * 4;
     rock.position.set(Math.cos(ang) * dist, baseY, Math.sin(ang) * dist);
     rock.rotation.set(rand() * Math.PI, rand() * Math.PI, rand() * Math.PI);
     rock.castShadow = true;
@@ -119,22 +119,22 @@ export function buildMoonBase(scene, { animate }) {
   });
 
   const dome = new THREE.Mesh(
-    new THREE.SphereGeometry(7, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.SphereGeometry(6, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
     glassMat
   );
   dome.position.set(0, 0, -10);
   group.add(dome);
 
   const domeBase = new THREE.Mesh(
-    new THREE.CylinderGeometry(7, 7.3, 0.5, 24),
+    new THREE.CylinderGeometry(6, 6.3, 0.5, 24),
     baseMat
   );
   domeBase.position.set(0, 0, -10);
   group.add(domeBase);
-  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 7.5);
+  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 6.5);
 
   const innerFloor = new THREE.Mesh(
-    new THREE.CircleGeometry(6.8, 24),
+    new THREE.CircleGeometry(5.8, 24),
     new THREE.MeshStandardMaterial({ color: 0x3a4a5a, roughness: 0.8 })
   );
   innerFloor.rotation.x = -Math.PI / 2;
@@ -142,29 +142,29 @@ export function buildMoonBase(scene, { animate }) {
   group.add(innerFloor);
 
   const cmdTower = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.5, 1.8, 6, 8),
+    new THREE.CylinderGeometry(1.2, 1.5, 5, 8),
     baseMat
   );
-  cmdTower.position.set(0, 3, -10);
+  cmdTower.position.set(0, 2.5, -10);
   cmdTower.castShadow = true;
   group.add(cmdTower);
 
   const antenna = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.05, 4, 6),
+    new THREE.CylinderGeometry(0.05, 0.05, 3, 6),
     new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.8 })
   );
-  antenna.position.set(0, 8, -10);
+  antenna.position.set(0, 6.5, -10);
   group.add(antenna);
 
   const antennaLight = new THREE.Mesh(
-    new THREE.SphereGeometry(0.15, 8, 6),
+    new THREE.SphereGeometry(0.12, 8, 6),
     new THREE.MeshStandardMaterial({
       color: 0xff3333,
       emissive: 0xff3333,
       emissiveIntensity: 1,
     })
   );
-  antennaLight.position.set(0, 10, -10);
+  antennaLight.position.set(0, 8, -10);
   group.add(antennaLight);
 
   animate((elapsed) => {
@@ -174,113 +174,22 @@ export function buildMoonBase(scene, { animate }) {
   const solarPanelMat = new THREE.MeshStandardMaterial({ color: 0x2244aa, metalness: 0.6, roughness: 0.3 });
   for (const side of [-1, 1]) {
     const panel = new THREE.Mesh(
-      new THREE.BoxGeometry(4, 0.08, 2),
+      new THREE.BoxGeometry(3, 0.08, 1.5),
       solarPanelMat
     );
-    panel.position.set(side * 10, 3, -10);
+    panel.position.set(side * 8, 2.5, -10);
     panel.rotation.z = side * 0.3;
     group.add(panel);
 
     const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.06, 0.06, 3, 6),
+      new THREE.CylinderGeometry(0.06, 0.06, 2.5, 6),
       baseMat
     );
-    pole.position.set(side * 10, 1.5, -10);
+    pole.position.set(side * 8, 1.25, -10);
     group.add(pole);
   }
 
-  const secondDome = new THREE.Mesh(
-    new THREE.SphereGeometry(5, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
-    glassMat
-  );
-  secondDome.position.set(-25, 0, 5);
-  group.add(secondDome);
-
-  const secondDomeBase = new THREE.Mesh(
-    new THREE.CylinderGeometry(5, 5.3, 0.5, 24),
-    baseMat
-  );
-  secondDomeBase.position.set(-25, 0, 5);
-  group.add(secondDomeBase);
-  noOpCollide(MOON_OFFSET_X + (-25), 5 + MOON_OFFSET_Z, 5.5);
-
-  const secondFloor = new THREE.Mesh(
-    new THREE.CircleGeometry(4.8, 24),
-    new THREE.MeshStandardMaterial({ color: 0x3a4a5a, roughness: 0.8 })
-  );
-  secondFloor.rotation.x = -Math.PI / 2;
-  secondFloor.position.set(-25, 0.05, 5);
-  group.add(secondFloor);
-
-  const miningTunnel = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.8, 1.8, 4, 12),
-    new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.9 })
-  );
-  miningTunnel.rotation.z = Math.PI / 2;
-  miningTunnel.position.set(-35, 0, -15);
-  group.add(miningTunnel);
-
-  const tunnelEntrance = new THREE.Mesh(
-    new THREE.BoxGeometry(3.6, 3.6, 0.3),
-    new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.9 })
-  );
-  tunnelEntrance.position.set(-35, 0, -17.5);
-  group.add(tunnelEntrance);
-
-  const tunnelDark = new THREE.Mesh(
-    new THREE.CircleGeometry(1.5, 12),
-    new THREE.MeshStandardMaterial({ color: 0x111111 })
-  );
-  tunnelDark.position.set(-35, 0, -17.4);
-  group.add(tunnelDark);
-
-  const observatory = new THREE.Mesh(
-    new THREE.CylinderGeometry(3, 3, 2, 12),
-    baseMat
-  );
-  observatory.position.set(25, 1, 10);
-  observatory.castShadow = true;
-  group.add(observatory);
-
-  const observatoryDome = new THREE.Mesh(
-    new THREE.SphereGeometry(3, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
-    new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.6, metalness: 0.3 })
-  );
-  observatoryDome.position.set(25, 2, 10);
-  group.add(observatoryDome);
-
-  const telescope = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.15, 0.3, 4, 8),
-    new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4, metalness: 0.6 })
-  );
-  telescope.position.set(25, 4, 10);
-  telescope.rotation.z = Math.PI / 4;
-  group.add(telescope);
-
-  const garage = new THREE.Mesh(
-    new THREE.BoxGeometry(5, 3, 6),
-    baseMat
-  );
-  garage.position.set(15, 1.5, -20);
-  garage.castShadow = true;
-  group.add(garage);
-
-  const garageDoor = new THREE.Mesh(
-    new THREE.BoxGeometry(3, 2.5, 0.2),
-    new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.7, metalness: 0.4 })
-  );
-  garageDoor.position.set(15, 1.25, -17);
-  group.add(garageDoor);
-
-  const storageRoom = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 2.5, 4),
-    baseMat
-  );
-  storageRoom.position.set(-20, 1.25, -15);
-  storageRoom.castShadow = true;
-  group.add(storageRoom);
-
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 12; i++) {
     const size = 0.4 + rand() * 0.8;
     const rock = new THREE.Mesh(
       new THREE.DodecahedronGeometry(size, 0),
@@ -301,38 +210,24 @@ export function buildMoonBase(scene, { animate }) {
   }
 
   const landingPad = new THREE.Mesh(
-    new THREE.CylinderGeometry(4, 4, 0.15, 24),
+    new THREE.CylinderGeometry(3, 3, 0.15, 24),
     new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.6, metalness: 0.4 })
   );
-  landingPad.position.set(0, 0.07, 20);
+  landingPad.position.set(0, 0.07, 15);
   group.add(landingPad);
 
-  const padMark1 = new THREE.Mesh(
-    new THREE.BoxGeometry(0.1, 0.02, 6),
-    new THREE.MeshStandardMaterial({ color: 0xffff00 })
-  );
-  padMark1.position.set(0, 0.16, 20);
-  group.add(padMark1);
-
-  const padMark2 = new THREE.Mesh(
-    new THREE.BoxGeometry(6, 0.02, 0.1),
-    new THREE.MeshStandardMaterial({ color: 0xffff00 })
-  );
-  padMark2.position.set(0, 0.16, 20);
-  group.add(padMark2);
-
   const rocket = createRocket();
-  rocket.position.set(0, 0.15, 20);
+  rocket.position.set(0, 0.15, 15);
   group.add(rocket);
 
-  const signBoard = createTextBoard("月球基地", 4, 1.5, { bg: "#1a1a2e", fg: "#ccccff" });
-  signBoard.position.set(0, 3, 12);
+  const signBoard = createTextBoard("月球基地", 3, 1.2, { bg: "#1a1a2e", fg: "#ccccff" });
+  signBoard.position.set(0, 2.5, 8);
   group.add(signBoard);
 
   const craterLights = [];
-  for (let i = 0; i < 10; i++) {
-    const ang = (i / 10) * Math.PI * 2;
-    const dist = 22 + rand() * 12;
+  for (let i = 0; i < 6; i++) {
+    const ang = (i / 6) * Math.PI * 2;
+    const dist = 18 + rand() * 8;
     const lamp = new THREE.Mesh(
       new THREE.SphereGeometry(0.15, 8, 6),
       lightMat.clone()
@@ -355,67 +250,44 @@ export function buildMoonBase(scene, { animate }) {
     }
   });
 
-  const pathMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.9 });
-  const pathPoints = [
-    [0, 20], [0, 15], [0, 5], [0, -5], [0, -10],
-    [0, -5], [-10, -5], [-20, -5], [-25, 0], [-25, 5],
-    [0, -5], [10, -5], [20, -10], [25, 10],
-    [0, 5], [-10, 5], [-20, 5], [-25, 5],
-    [0, 15], [10, 15], [15, -15], [15, -20],
-  ];
-  for (const [px, pz] of pathPoints) {
-    const path = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 0.05, 1.2),
-      pathMat
-    );
-    path.position.set(px, 0.02, pz);
-    group.add(path);
-  }
-
   const roverBody = new THREE.Mesh(
-    new THREE.BoxGeometry(2.2, 0.7, 1.4),
+    new THREE.BoxGeometry(2, 0.6, 1.2),
     new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.4 })
   );
-  roverBody.position.set(-18, 0.5, 8);
+  roverBody.position.set(-18, 0.5, 5);
   roverBody.castShadow = true;
   group.add(roverBody);
 
   const roverCab = new THREE.Mesh(
-    new THREE.BoxGeometry(1.2, 0.6, 1.1),
+    new THREE.BoxGeometry(1, 0.5, 1),
     new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.5 })
   );
-  roverCab.position.set(-18, 1.15, 8);
+  roverCab.position.set(-18, 1.05, 5);
   group.add(roverCab);
 
   const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
-  for (const [wx, wz] of [[-1.3, 0.8], [1.3, 0.8], [-1.3, -0.8], [1.3, -0.8]]) {
-    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.2, 10), wheelMat);
+  for (const [wx, wz] of [[-1.2, 0.7], [1.2, 0.7], [-1.2, -0.7], [1.2, -0.7]]) {
+    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.15, 10), wheelMat);
     wheel.rotation.z = Math.PI / 2;
-    wheel.position.set(-18 + wx, 0.3, 8 + wz);
+    wheel.position.set(-18 + wx, 0.25, 5 + wz);
     group.add(wheel);
   }
 
-  const rover2 = roverBody.clone();
-  rover2.position.set(-30, 0.5, 0);
-  rover2.rotation.y = Math.PI / 3;
-  group.add(rover2);
-
   for (const [fx, fz, fcolor] of [
-    [-25, -20, 0xff4444], [25, -20, 0x44ff44], [-30, 15, 0x4444ff], [30, 15, 0xffff44],
-    [-40, -5, 0xff88ff], [40, -5, 0x88ffff], [0, -30, 0xff8800], [0, 30, 0x88ff88],
+    [-20, -15, 0xff4444], [20, -15, 0x44ff44], [-25, 10, 0x4444ff], [25, 10, 0xffff44],
   ]) {
     const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.04, 0.04, 2.2, 6),
+      new THREE.CylinderGeometry(0.04, 0.04, 2, 6),
       baseMat
     );
-    pole.position.set(fx, 1.1, fz);
+    pole.position.set(fx, 1, fz);
     group.add(pole);
 
     const flag = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.9, 0.6),
+      new THREE.PlaneGeometry(0.8, 0.5),
       new THREE.MeshStandardMaterial({ color: fcolor, side: THREE.DoubleSide })
     );
-    flag.position.set(fx + 0.45, 1.9, fz);
+    flag.position.set(fx + 0.4, 1.7, fz);
     group.add(flag);
   }
 
@@ -429,10 +301,10 @@ export function buildMoonBase(scene, { animate }) {
     metalness: 0.5,
   });
   const crystals = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 8; i++) {
     const ang = rand() * Math.PI * 2;
-    const dist = 18 + rand() * 25;
-    const size = 0.3 + rand() * 0.8;
+    const dist = 15 + rand() * 15;
+    const size = 0.3 + rand() * 0.6;
     const crystal = new THREE.Mesh(
       new THREE.ConeGeometry(size * 0.4, size * 2, 6),
       crystalMat.clone()
@@ -449,45 +321,21 @@ export function buildMoonBase(scene, { animate }) {
     }
   });
 
-  const purpleCrystalMat = new THREE.MeshStandardMaterial({
-    color: 0xcc88ff,
-    emissive: 0x8844cc,
-    emissiveIntensity: 0.4,
-    transparent: true,
-    opacity: 0.7,
-    roughness: 0.1,
-    metalness: 0.5,
-  });
-  for (let i = 0; i < 6; i++) {
-    const ang = rand() * Math.PI * 2;
-    const dist = 30 + rand() * 15;
-    const size = 0.5 + rand() * 1;
-    const crystal = new THREE.Mesh(
-      new THREE.ConeGeometry(size * 0.5, size * 2.5, 5),
-      purpleCrystalMat.clone()
-    );
-    crystal.position.set(Math.cos(ang) * dist, size, Math.sin(ang) * dist);
-    crystal.rotation.z = (rand() - 0.5) * 0.4;
-    crystal.castShadow = true;
-    group.add(crystal);
-    crystals.push(crystal);
-  }
-
   const dishMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4, metalness: 0.6 });
-  const dishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3.5, 8), baseMat);
-  dishPole.position.set(20, 1.75, -8);
+  const dishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3, 8), baseMat);
+  dishPole.position.set(18, 1.5, -5);
   group.add(dishPole);
 
-  const dish = new THREE.Mesh(new THREE.SphereGeometry(1.8, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), dishMat);
-  dish.position.set(20, 3.5, -8);
+  const dish = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), dishMat);
+  dish.position.set(18, 3, -5);
   dish.rotation.x = Math.PI;
   group.add(dish);
 
   const dishCenter = new THREE.Mesh(
-    new THREE.SphereGeometry(0.18, 8, 6),
+    new THREE.SphereGeometry(0.15, 8, 6),
     new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 0.5 })
   );
-  dishCenter.position.set(20, 3.5, -8);
+  dishCenter.position.set(18, 3, -5);
   group.add(dishCenter);
 
   animate((elapsed) => {
@@ -496,70 +344,42 @@ export function buildMoonBase(scene, { animate }) {
 
   const hydroMat = new THREE.MeshStandardMaterial({ color: 0x228833, roughness: 0.7 });
   const hydroBase = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 0.3, 3),
+    new THREE.BoxGeometry(3, 0.3, 2),
     baseMat
   );
-  hydroBase.position.set(-18, 0.15, -18);
+  hydroBase.position.set(-15, 0.15, -12);
   group.add(hydroBase);
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     const plant = new THREE.Mesh(
-      new THREE.SphereGeometry(0.3, 8, 6),
+      new THREE.SphereGeometry(0.25, 8, 6),
       hydroMat.clone()
     );
-    plant.position.set(-19.5 + i * 0.9, 0.6, -18);
+    plant.position.set(-16.2 + i * 0.8, 0.5, -12);
     plant.scale.y = 1.3;
     group.add(plant);
   }
 
   const hydroGlass = new THREE.Mesh(
-    new THREE.BoxGeometry(4.2, 2, 3.2),
+    new THREE.BoxGeometry(3.2, 1.5, 2.2),
     new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.2 })
   );
-  hydroGlass.position.set(-18, 1.15, -18);
+  hydroGlass.position.set(-15, 0.9, -12);
   group.add(hydroGlass);
 
-  const windmillPole = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.1, 0.15, 5, 8),
-    baseMat
-  );
-  windmillPole.position.set(-30, 2.5, -25);
-  group.add(windmillPole);
-
-  const windmillBlades = new THREE.Group();
-  for (let i = 0; i < 3; i++) {
-    const blade = new THREE.Mesh(
-      new THREE.BoxGeometry(0.2, 2, 0.05),
-      new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.5 })
+  const roverTrackMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.9 });
+  for (let i = 0; i < 20; i++) {
+    const track = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 0.05, 0.3),
+      roverTrackMat
     );
-    blade.rotation.z = (i / 3) * Math.PI * 2;
-    blade.position.y = 1;
-    windmillBlades.add(blade);
+    const tx = -20 - i * 0.25;
+    track.position.set(tx, 0.05, 5);
+    group.add(track);
   }
-  windmillBlades.position.set(-30, 5, -25);
-  group.add(windmillBlades);
-
-  animate((elapsed) => {
-    windmillBlades.rotation.z = elapsed * 0.5;
-  });
-
-  const waterTank = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.5, 1.5, 3, 12),
-    new THREE.MeshStandardMaterial({ color: 0x6688cc, roughness: 0.5, metalness: 0.3 })
-  );
-  waterTank.position.set(30, 1.5, -5);
-  waterTank.castShadow = true;
-  group.add(waterTank);
-
-  const waterTankTop = new THREE.Mesh(
-    new THREE.ConeGeometry(1.5, 0.8, 12),
-    new THREE.MeshStandardMaterial({ color: 0x5577aa, roughness: 0.5 })
-  );
-  waterTankTop.position.set(30, 3.4, -5);
-  group.add(waterTankTop);
 
   const benchMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
-  for (const [bx, bz] of [[3, 5], [-5, 6], [8, 3], [-8, 12], [12, 8], [-12, 0], [20, 5], [-20, -10]]) {
+  for (const [bx, bz] of [[3, 5], [-5, 6], [8, 3]]) {
     const bench = new THREE.Mesh(
       new THREE.BoxGeometry(1.5, 0.1, 0.5),
       benchMat
@@ -578,117 +398,22 @@ export function buildMoonBase(scene, { animate }) {
   }
 
   const cargoBoxMat = new THREE.MeshStandardMaterial({ color: 0x996633, roughness: 0.9 });
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     const box = new THREE.Mesh(
       new THREE.BoxGeometry(0.6, 0.5, 0.6),
       cargoBoxMat
     );
-    box.position.set(-3 + (i % 4) * 0.8, 0.25, 16 + Math.floor(i / 4) * 0.8);
+    box.position.set(-2 + (i % 3) * 0.7, 0.25, 10 + Math.floor(i / 3) * 0.7);
     box.rotation.y = rand() * 0.5;
     box.castShadow = true;
     group.add(box);
   }
 
-  const fuelBarrelMat = new THREE.MeshStandardMaterial({ color: 0xcc4444, roughness: 0.8 });
-  for (let i = 0; i < 4; i++) {
-    const barrel = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.3, 0.3, 0.8, 10),
-      fuelBarrelMat
-    );
-    barrel.position.set(5 + i * 0.8, 0.4, 18);
-    barrel.castShadow = true;
-    group.add(barrel);
-  }
-
-  const cranePole = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.12, 0.12, 6, 8),
-    new THREE.MeshStandardMaterial({ color: 0xffaa00, roughness: 0.7, metalness: 0.3 })
-  );
-  cranePole.position.set(20, 3, 15);
-  group.add(cranePole);
-
-  const craneArm = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 0.15, 0.15),
-    new THREE.MeshStandardMaterial({ color: 0xffaa00, roughness: 0.7, metalness: 0.3 })
-  );
-  craneArm.position.set(22, 6, 15);
-  group.add(craneArm);
-
-  const craneCable = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.02, 0.02, 2, 4),
-    new THREE.MeshStandardMaterial({ color: 0x888888 })
-  );
-  craneCable.position.set(24, 5, 15);
-  group.add(craneCable);
-
-  const craneHook = new THREE.Mesh(
-    new THREE.TorusGeometry(0.15, 0.03, 8, 12),
-    new THREE.MeshStandardMaterial({ color: 0x888888 })
-  );
-  craneHook.position.set(24, 4, 15);
-  group.add(craneHook);
-
-  const landingLights = [];
-  for (let i = 0; i < 8; i++) {
-    const ang = (i / 8) * Math.PI * 2;
-    const lr = 5;
-    const ll = new THREE.Mesh(
-      new THREE.SphereGeometry(0.1, 8, 6),
-      new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 1 })
-    );
-    ll.position.set(Math.cos(ang) * lr, 0.2, 20 + Math.sin(ang) * lr);
-    group.add(ll);
-    landingLights.push(ll);
-  }
-
-  animate((elapsed) => {
-    for (let i = 0; i < landingLights.length; i++) {
-      const phase = (i / landingLights.length) * Math.PI * 2;
-      landingLights[i].material.emissiveIntensity = 0.3 + Math.sin(elapsed * 2 + phase) * 0.7;
-    }
-  });
-
-  const oxygenTankMat = new THREE.MeshStandardMaterial({ color: 0x44aaff, roughness: 0.5, metalness: 0.4 });
-  for (let i = 0; i < 3; i++) {
-    const tank = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.4, 0.4, 1.5, 10),
-      oxygenTankMat
-    );
-    tank.position.set(-8 + i * 1, 0.75, -14);
-    tank.castShadow = true;
-    group.add(tank);
-  }
-
-  const benchMat2 = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
-  const picnicArea = new THREE.Mesh(
-    new THREE.CylinderGeometry(2, 2, 0.1, 16),
-    new THREE.MeshStandardMaterial({ color: 0x997755, roughness: 0.8 })
-  );
-  picnicArea.position.set(-5, 0.5, 15);
-  group.add(picnicArea);
-
-  const tableLegMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.8 });
-  for (const [tx, tz] of [[-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5], [0.5, 0.5]]) {
-    const tleg = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.05, 0.05, 0.5, 6),
-      tableLegMat
-    );
-    tleg.position.set(-5 + tx, 0.25, 15 + tz);
-    group.add(tleg);
-  }
-
-  const tableTop = new THREE.Mesh(
-    new THREE.CylinderGeometry(1, 1, 0.1, 16),
-    new THREE.MeshStandardMaterial({ color: 0xaa8866, roughness: 0.7 })
-  );
-  tableTop.position.set(-5, 0.55, 15);
-  group.add(tableTop);
-
   scene.add(group);
 
   return {
     group,
-    spawnPoint: new THREE.Vector3(0, 0.15, 20).add(MOON_OFFSET),
+    spawnPoint: new THREE.Vector3(0, 0.15, 15).add(MOON_OFFSET),
     moonRadius: MOON_RADIUS,
   };
 }
@@ -699,7 +424,7 @@ function createStarField(rand) {
   const positions = [];
   const colors = [];
 
-  for (let i = 0; i < 800; i++) {
+  for (let i = 0; i < 500; i++) {
     const ang = rand() * Math.PI * 2;
     const elev = rand() * Math.PI;
     const r = 100 + rand() * 80;
@@ -716,7 +441,7 @@ function createStarField(rand) {
   starGeo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
   const starMat = new THREE.PointsMaterial({
-    size: 0.35,
+    size: 0.3,
     vertexColors: true,
     transparent: true,
     opacity: 0.9,
@@ -732,19 +457,20 @@ function createGalaxy(rand) {
   const positions = [];
   const colors = [];
 
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 300; i++) {
     const arm = Math.floor(rand() * 3);
     const armAngle = (arm / 3) * Math.PI * 2;
-    const dist = rand() * 30;
-    const spread = (rand() - 0.5) * 10;
+    const dist = rand() * 25;
+    const spread = (rand() - 0.5) * 8;
     const angle = armAngle + dist * 0.08;
 
     positions.push(
       Math.cos(angle) * dist + spread,
-      (rand() - 0.5) * 5,
+      (rand() - 0.5) * 4,
       Math.sin(angle) * dist + spread
     );
 
+    const t = dist / 25;
     if (rand() < 0.3) {
       colors.push(0.8 + rand() * 0.2, 0.6 + rand() * 0.2, 0.6);
     } else if (rand() < 0.5) {
@@ -759,7 +485,7 @@ function createGalaxy(rand) {
   starGeo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
   const starMat = new THREE.PointsMaterial({
-    size: 0.25,
+    size: 0.2,
     vertexColors: true,
     transparent: true,
     opacity: 0.7,
@@ -773,7 +499,7 @@ function createGalaxy(rand) {
     opacity: 0.15,
     depthWrite: false,
   });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(4, 16, 12), coreMat);
+  const core = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), coreMat);
   group.add(core);
 
   return group;
@@ -787,18 +513,18 @@ function createRocket() {
   const finMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.7, metalness: 0.4 });
 
   const body = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.5, 0.6, 3.5, 12),
+    new THREE.CylinderGeometry(0.4, 0.5, 3, 12),
     bodyMat
   );
-  body.position.y = 2.25;
+  body.position.y = 2;
   body.castShadow = true;
   group.add(body);
 
   const nose = new THREE.Mesh(
-    new THREE.ConeGeometry(0.5, 1.2, 12),
+    new THREE.ConeGeometry(0.4, 1, 12),
     noseMat
   );
-  nose.position.y = 4.6;
+  nose.position.y = 4;
   nose.castShadow = true;
   group.add(nose);
 
@@ -808,17 +534,17 @@ function createRocket() {
     emissiveIntensity: 0.3,
     roughness: 0.1,
   });
-  const window1 = new THREE.Mesh(new THREE.CircleGeometry(0.18, 12), windowMat);
-  window1.position.set(0, 3.2, 0.51);
+  const window1 = new THREE.Mesh(new THREE.CircleGeometry(0.15, 12), windowMat);
+  window1.position.set(0, 2.8, 0.41);
   group.add(window1);
 
   for (let i = 0; i < 3; i++) {
     const fin = new THREE.Mesh(
-      new THREE.BoxGeometry(0.1, 1.4, 0.9),
+      new THREE.BoxGeometry(0.08, 1.2, 0.8),
       finMat
     );
     const ang = (i / 3) * Math.PI * 2;
-    fin.position.set(Math.sin(ang) * 0.65, 0.9, Math.cos(ang) * 0.65);
+    fin.position.set(Math.sin(ang) * 0.55, 0.8, Math.cos(ang) * 0.55);
     fin.rotation.y = -ang;
     group.add(fin);
   }
@@ -829,7 +555,7 @@ function createRocket() {
     opacity: 0.7,
   });
   const flame = new THREE.Mesh(
-    new THREE.ConeGeometry(0.35, 1, 8),
+    new THREE.ConeGeometry(0.3, 0.8, 8),
     flameMat
   );
   flame.position.y = 0.2;
@@ -837,7 +563,7 @@ function createRocket() {
   group.add(flame);
 
   const flameInner = new THREE.Mesh(
-    new THREE.ConeGeometry(0.18, 0.6, 8),
+    new THREE.ConeGeometry(0.15, 0.5, 8),
     new THREE.MeshBasicMaterial({ color: 0xffcc00, transparent: true, opacity: 0.8 })
   );
   flameInner.position.y = 0.3;
