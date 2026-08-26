@@ -191,4 +191,33 @@ export function buildJuicePort(scene, { animate, collide }) {
   signGroup.rotation.y = 0.95;
   scene.add(signGroup);
   collide(-31, 33, 0.35);
+
+  const ticketBoothMat = new THREE.MeshStandardMaterial({ color: 0x3a5a8a, roughness: 0.7, metalness: 0.2 });
+  const booth = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.5, 2.2), ticketBoothMat);
+  booth.position.set(-46, 1.25, 44);
+  booth.castShadow = true;
+  booth.receiveShadow = true;
+  scene.add(booth);
+  collide(-46, 44, 1.4);
+
+  const boothRoof = new THREE.Mesh(
+    new THREE.ConeGeometry(2, 1, 4),
+    new THREE.MeshStandardMaterial({ color: 0xff4444, roughness: 0.7 })
+  );
+  boothRoof.position.set(-46, 3, 44);
+  boothRoof.rotation.y = Math.PI / 4;
+  scene.add(boothRoof);
+
+  const rocketSign = createTextBoard("🚀 月球火箭 $15", 2.5, 0.9, { bg: "#0a0a2e", fg: "#aaddff" });
+  rocketSign.position.set(-46, 3.8, 44);
+  scene.add(rocketSign);
+
+  for (const side of [-1, 1]) {
+    const windowPane = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.8, 0.6),
+      new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.5, roughness: 0.1 })
+    );
+    windowPane.position.set(-46 + side * 0.6, 1.8, 44 + 1.11);
+    scene.add(windowPane);
+  }
 }

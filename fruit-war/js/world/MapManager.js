@@ -25,6 +25,7 @@ import { buildMysteryForest } from "./zones/MysteryForest.js";
 import { buildFruitBeach } from "./zones/FruitBeach.js";
 import { buildJuicePort } from "./zones/JuicePort.js";
 import { buildArena } from "./zones/Arena.js";
+import { buildMoonBase, MOON_OFFSET } from "./zones/MoonBase.js";
 
 const ISLAND_RADIUS = 60;
 
@@ -85,6 +86,7 @@ export class MapManager {
     buildFruitBeach(scene, ctx);
     buildJuicePort(scene, ctx);
     buildArena(scene, ctx);
+    this.moonData = buildMoonBase(scene, ctx);
 
     for (let i = 0; i < this.paths.length; i++) {
       const p = this.paths[i];

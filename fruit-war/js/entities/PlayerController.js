@@ -32,6 +32,7 @@ export class PlayerController {
     this._move = new THREE.Vector3();
     this._snapped = false;
     this.interiorCollisions = [];
+    this.lowGravity = false;
   }
 
   update(dt, input, boundsRadius, collisions, playerState) {
@@ -125,11 +126,14 @@ export class PlayerController {
     }
     if (collisions) collisions.resolve(pos, 0.55);
 
+    const gravityMul = this.lowGravity ? 0.45 : 1;
+    const jumpMul = this.lowGravity ? 1.8 : 1;
+
     if (input.isDown("Space") && c.onGround) {
-      c.velocityY = c.def.jumpPower;
+      c.velocityY = c.def.jumpPower * jumpMul;
       c.onGround = false;
     }
-    c.velocityY -= GRAVITY * dt;
+    c.velocityY -= GRAVITY * gravityMul * dt;
     pos.y += c.velocityY * dt;
     if (pos.y <= 0) {
       pos.y = 0;
