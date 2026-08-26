@@ -216,14 +216,6 @@ export function buildMoonBase(scene, { animate }) {
   landingPad.position.set(0, 0.07, 15);
   group.add(landingPad);
 
-  const padRing = new THREE.Mesh(
-    new THREE.TorusGeometry(3, 0.08, 8, 32),
-    new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, emissiveIntensity: 0.3 })
-  );
-  padRing.rotation.x = -Math.PI / 2;
-  padRing.position.set(0, 0.15, 15);
-  group.add(padRing);
-
   const rocket = createRocket();
   rocket.position.set(0, 0.15, 15);
   group.add(rocket);
