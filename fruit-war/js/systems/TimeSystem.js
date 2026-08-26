@@ -3,16 +3,16 @@ import * as THREE from "three";
 const DAY_REAL_SECONDS = 360;
 
 const SKY_STOPS = [
-  { h: 0, color: 0x0b1233 },
-  { h: 4.5, color: 0x0b1233 },
-  { h: 6, color: 0x35406e },
+  { h: 0, color: 0x162040 },
+  { h: 4.5, color: 0x162040 },
+  { h: 6, color: 0x3d4a7a },
   { h: 7.2, color: 0xe89a6b },
   { h: 8.5, color: 0x8ecae6 },
   { h: 16, color: 0x9fd3ef },
   { h: 17.6, color: 0xffb37e },
-  { h: 19, color: 0x4a3a6b },
-  { h: 20.5, color: 0x131a38 },
-  { h: 24, color: 0x0b1233 },
+  { h: 19, color: 0x524278 },
+  { h: 20.5, color: 0x1a2545 },
+  { h: 24, color: 0x162040 },
 ];
 
 export class TimeSystem {
@@ -109,13 +109,13 @@ export class TimeSystem {
         this.sun.color.lerpColors(this._c1, this._c2, Math.min(1, dayElev * 2));
       } else {
         this.sun.position.set(-30, 55, -25);
-        this.sun.intensity = 0.35;
-        this.sun.color.setHex(0xa9c4ff);
+        this.sun.intensity = 0.5;
+        this.sun.color.setHex(0xb8d0ff);
       }
     }
 
     if (this.hemi) {
-      this.hemi.intensity = 0.22 + dayElev * 0.8;
+      this.hemi.intensity = 0.38 + dayElev * 0.65;
     }
   }
 }
