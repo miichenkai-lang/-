@@ -153,12 +153,12 @@ function boot() {
     if (rocket.isTransitioning) {
       if (rocket.launchPhase === "boarding" || rocket.launchPhase === "takeoff") {
         const pos = player.group.position;
-        camera.position.set(
+        controller.camera.position.set(
           pos.x - Math.sin(controller.yaw) * 3,
           pos.y + 2.5,
           pos.z - Math.cos(controller.yaw) * 3
         );
-        camera.lookAt(pos.x, pos.y + 1, pos.z);
+        controller.camera.lookAt(pos.x, pos.y + 1, pos.z);
       }
       input.endFrame();
       return;
