@@ -55,8 +55,6 @@ export class RocketSystem {
     this._savedBg = this.scene.background ? this.scene.background.clone() : null;
     this._savedFog = this.scene.fog ? this.scene.fog.clone() : null;
 
-    this.player._frozen = true;
-
     this.ui.toast("🚀 前往發射台...");
     return true;
   }
@@ -195,7 +193,6 @@ export class RocketSystem {
     this.player.group.rotation.y = 0;
     this.player.group.scale.set(1, 1, 1);
     this.player.group.visible = true;
-    this.player._frozen = false;
 
     this.isOnMoon = true;
     this.isTransitioning = false;
@@ -224,7 +221,6 @@ export class RocketSystem {
     this.isOnMoon = false;
     this.isTransitioning = false;
     this.returnPhase = "";
-    this.player._frozen = false;
 
     this._hideOverlay();
     this.ui.toast("🏝️ 歡迎回到果汁島！");
