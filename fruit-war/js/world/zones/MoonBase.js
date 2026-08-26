@@ -8,11 +8,13 @@ const MOON_RADIUS = 45;
 
 export const MOON_OFFSET = new THREE.Vector3(MOON_OFFSET_X, MOON_OFFSET_Y, MOON_OFFSET_Z);
 
-export function buildMoonBase(scene, { animate, collide }) {
+export function buildMoonBase(scene, { animate }) {
   const rand = mulberry32(20260901);
   const group = new THREE.Group();
   group.position.copy(MOON_OFFSET);
   group.visible = false;
+
+  const noOpCollide = () => {};
 
   const moonMat = new THREE.MeshStandardMaterial({
     color: 0xc8c8c8,
@@ -129,7 +131,7 @@ export function buildMoonBase(scene, { animate, collide }) {
   );
   domeBase.position.set(0, 0, -10);
   group.add(domeBase);
-  collide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 6.5);
+  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 6.5);
 
   const innerFloor = new THREE.Mesh(
     new THREE.CircleGeometry(5.8, 24),
@@ -204,7 +206,7 @@ export function buildMoonBase(scene, { animate, collide }) {
     rock.castShadow = true;
     rock.receiveShadow = true;
     group.add(rock);
-    collide(MOON_OFFSET_X + rock.position.x, MOON_OFFSET_Z + rock.position.z, size * 0.8);
+    noOpCollide(MOON_OFFSET_X + rock.position.x, MOON_OFFSET_Z + rock.position.z, size * 0.8);
   }
 
   const landingPad = new THREE.Mesh(

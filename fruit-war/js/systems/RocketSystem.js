@@ -25,7 +25,7 @@ export class RocketSystem {
 
   checkTicketBooth(playerPos) {
     if (this.isOnMoon || this.isTransitioning) return false;
-    const ticketPos = { x: -46, z: 44 };
+    const ticketPos = { x: -38, z: 36 };
     const d = Math.hypot(playerPos.x - ticketPos.x, playerPos.z - ticketPos.z);
     return d < 2.5;
   }
