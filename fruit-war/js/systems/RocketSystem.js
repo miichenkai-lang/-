@@ -16,6 +16,9 @@ export class RocketSystem {
     this.ticketCost = 15;
     this._keepVisible = new Set();
     this._savedIslandVisible = new Map();
+    this._boardStart = null;
+    this._boardEnd = null;
+    this._boardJumpStart = null;
   }
 
   setMoonData(moonData, moonGroup) {
@@ -43,13 +46,18 @@ export class RocketSystem {
 
     playerState.coins -= this.ticketCost;
     this.isTransitioning = true;
-    this.launchPhase = "countdown";
-    this.launchTimer = 3;
-    this.countdownValue = 3;
+    this.launchPhase = "boarding";
+    this.launchTimer = 2.5;
+
+    this._boardStart = this.player.group.position.clone();
+    this._boardEnd = new THREE.Vector3(0, 0.15, 15);
+    this._boardJumpStart = performance.now();
     this._savedBg = this.scene.background ? this.scene.background.clone() : null;
     this._savedFog = this.scene.fog ? this.scene.fog.clone() : null;
 
-    this.ui.toast(`🚀 火箭發射倒數：${this.countdownValue}`);
+    this.player._frozen = true;
+
+    this.ui.toast("🚀 前往發射台...");
     return true;
   }
 
@@ -71,7 +79,31 @@ export class RocketSystem {
   }
 
   _updateLaunch(dt) {
-    if (this.launchPhase === "countdown") {
+    if (this.launchPhase === "boarding") {
+      this.launchTimer -= dt;
+      const t = 1 - Math.max(0, this.launchTimer / 2.5);
+      const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const jumpHeight = 4;
+      const jumpProgress = Math.sin(t * Math.PI);
+
+      const pos = this.player.group.position;
+      pos.lerpVectors(this._boardStart, this._boardEnd, ease);
+      pos.y = 0.15 + jumpProgress * jumpHeight;
+
+      const dir = new THREE.Vector3().subVectors(this._boardEnd, this._boardStart).normalize();
+      if (dir.lengthSq() > 0.001) {
+        this.player.group.rotation.y = Math.atan2(dir.x, dir.z);
+      }
+
+      if (this.launchTimer <= 0) {
+        this.player.group.position.copy(this._boardEnd);
+        this.player.group.position.y = 0.15;
+        this.launchPhase = "countdown";
+        this.launchTimer = 3;
+        this.countdownValue = 3;
+        this.ui.toast(`🚀 火箭發射倒數：${this.countdownValue}`);
+      }
+    } else if (this.launchPhase === "countdown") {
       this.launchTimer -= dt;
       const newVal = Math.ceil(this.launchTimer);
       if (newVal !== this.countdownValue && newVal > 0) {
@@ -79,16 +111,27 @@ export class RocketSystem {
         this.ui.toast(`🚀 火箭發射倒數：${this.countdownValue}`);
       }
       if (this.launchTimer <= 0) {
+        this.launchPhase = "takeoff";
+        this.launchTimer = 1.5;
+        this._takeoffStartY = this.player.group.position.y;
+        this._showOverlay("火箭發射中...");
+      }
+    } else if (this.launchPhase === "takeoff") {
+      this.launchTimer -= dt;
+      const t = 1 - Math.max(0, this.launchTimer / 1.5);
+      this.player.group.position.y = this._takeoffStartY + t * 30;
+      this.player.group.scale.setScalar(1 - t * 0.5);
+      if (this.launchTimer <= 0) {
         this.launchPhase = "blackout";
         this.launchTimer = 1.5;
-        this._showOverlay("火箭發射中...");
+        this._showOverlay("飛往月球中...");
       }
     } else if (this.launchPhase === "blackout") {
       this.launchTimer -= dt;
       if (this.launchTimer <= 0) {
         this.launchPhase = "flying";
         this.launchTimer = 2;
-        this._showOverlay("飛往月球中...");
+        this._showOverlay("即將降落月球...");
       }
     } else if (this.launchPhase === "flying") {
       this.launchTimer -= dt;
@@ -152,6 +195,7 @@ export class RocketSystem {
     this.player.group.rotation.y = 0;
     this.player.group.scale.set(1, 1, 1);
     this.player.group.visible = true;
+    this.player._frozen = false;
 
     this.isOnMoon = true;
     this.isTransitioning = false;
@@ -180,6 +224,7 @@ export class RocketSystem {
     this.isOnMoon = false;
     this.isTransitioning = false;
     this.returnPhase = "";
+    this.player._frozen = false;
 
     this._hideOverlay();
     this.ui.toast("🏝️ 歡迎回到果汁島！");

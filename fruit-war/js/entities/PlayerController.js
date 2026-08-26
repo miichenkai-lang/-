@@ -34,9 +34,24 @@ export class PlayerController {
     this.interiorCollisions = [];
     this.lowGravity = false;
     this.groundLevel = 0;
+    this._frozen = false;
   }
 
   update(dt, input, boundsRadius, collisions, playerState) {
+    if (this._frozen) {
+      this.camera.position.set(
+        this.character.group.position.x - Math.sin(this.yaw) * 2.5,
+        this.character.group.position.y + 2,
+        this.character.group.position.z - Math.cos(this.yaw) * 2.5
+      );
+      this.camera.lookAt(
+        this.character.group.position.x,
+        this.character.group.position.y + 0.8,
+        this.character.group.position.z
+      );
+      return;
+    }
+
     const delta = input.takeMouseDelta();
     if (input.locked && this.enabled) {
       this.yaw -= delta.dx * 0.0026;
