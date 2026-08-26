@@ -28,9 +28,16 @@ export class RocketSystem {
 
   checkTicketBooth(playerPos) {
     if (this.isOnMoon || this.isTransitioning) return false;
-    const ticketPos = { x: -38, z: 36 };
+    const ticketPos = { x: -8, z: -4 };
     const d = Math.hypot(playerPos.x - ticketPos.x, playerPos.z - ticketPos.z);
     return d < 2.5;
+  }
+
+  checkMoonTicketBooth(playerPos) {
+    if (!this.isOnMoon || this.isTransitioning) return false;
+    const ticketPos = { x: 0, z: 15 };
+    const d = Math.hypot(playerPos.x - ticketPos.x, playerPos.z - ticketPos.z);
+    return d < 4;
   }
 
   canAfford(playerState) {
@@ -59,11 +66,17 @@ export class RocketSystem {
     return true;
   }
 
-  startReturn() {
-    if (this.isTransitioning || !this.isOnMoon) return;
+  startReturn(playerState) {
+    if (this.isTransitioning || !this.isOnMoon) return false;
+    if (!this.canAfford(playerState)) {
+      this.ui.toast(`金幣不足！需要 ${this.ticketCost} 金幣`, true);
+      return false;
+    }
+    playerState.coins -= this.ticketCost;
     this.isTransitioning = true;
     this.returnPhase = "blackout";
     this.returnTimer = 2;
+    return true;
   }
 
   update(dt) {
@@ -119,7 +132,55 @@ export class RocketSystem {
       const t = 1 - Math.max(0, this.launchTimer / 1.5);
       this.player.group.position.y = this._takeoffStartY + t * 30;
       this.player.group.scale.setScalar(1 - t * 0.5);
+
+      if (!this._flames) {
+        this._flames = [];
+        for (let i = 0; i < 12; i++) {
+          const flame = new THREE.Mesh(
+            new THREE.ConeGeometry(0.15 + Math.random() * 0.2, 0.5 + Math.random() * 0.5, 6),
+            new THREE.MeshBasicMaterial({
+              color: i % 2 === 0 ? 0xff6600 : 0xffcc00,
+              transparent: true,
+              opacity: 0.8,
+            })
+          );
+          flame.position.copy(this.player.group.position);
+          flame.position.y -= 0.5;
+          flame.userData = {
+            vx: (Math.random() - 0.5) * 2,
+            vy: -2 - Math.random() * 3,
+            vz: (Math.random() - 0.5) * 2,
+            life: 0.5 + Math.random() * 0.5,
+            maxLife: 0.5 + Math.random() * 0.5,
+          };
+          this.scene.add(flame);
+          this._flames.push(flame);
+        }
+      }
+
+      for (const f of this._flames) {
+        const ud = f.userData;
+        ud.life -= dt;
+        f.position.x += ud.vx * dt;
+        f.position.y += ud.vy * dt;
+        f.position.z += ud.vz * dt;
+        f.material.opacity = Math.max(0, ud.life / ud.maxLife) * 0.8;
+        f.scale.setScalar(Math.max(0.1, ud.life / ud.maxLife));
+        if (ud.life <= 0) {
+          f.position.copy(this.player.group.position);
+          f.position.y -= 0.5;
+          ud.vx = (Math.random() - 0.5) * 2;
+          ud.vy = -2 - Math.random() * 3;
+          ud.vz = (Math.random() - 0.5) * 2;
+          ud.life = ud.maxLife;
+        }
+      }
+
       if (this.launchTimer <= 0) {
+        if (this._flames) {
+          for (const f of this._flames) this.scene.remove(f);
+          this._flames = null;
+        }
         this.launchPhase = "blackout";
         this.launchTimer = 1.5;
         this._showOverlay("飛往月球中...");

@@ -193,8 +193,16 @@ function boot() {
         }
       }
 
-      if (input.wasPressed("KeyQ") && !shops.menuOpen && !dialogue.active) {
-        rocket.startReturn();
+      const nearMoonTicket = rocket.checkMoonTicketBooth(player.group.position);
+      if (nearMoonTicket && !shops.menuOpen && !dialogue.active) {
+        ui.showPrompt(`🚀 搭火箭回果汁島（$${rocket.ticketCost}）`);
+        if (input.wasPressed("KeyE")) {
+          rocket.startReturn(playerState);
+        }
+      }
+
+      if (input.wasPressed("KeyQ") && !shops.menuOpen && !dialogue.active && !nearMoonTicket) {
+        rocket.startReturn(playerState);
       }
 
       input.endFrame();
