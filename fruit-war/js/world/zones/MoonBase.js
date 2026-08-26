@@ -250,6 +250,167 @@ export function buildMoonBase(scene, { animate }) {
     }
   });
 
+  const roverBody = new THREE.Mesh(
+    new THREE.BoxGeometry(2, 0.6, 1.2),
+    new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.4 })
+  );
+  roverBody.position.set(-18, 0.5, 5);
+  roverBody.castShadow = true;
+  group.add(roverBody);
+
+  const roverCab = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 0.5, 1),
+    new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.5 })
+  );
+  roverCab.position.set(-18, 1.05, 5);
+  group.add(roverCab);
+
+  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
+  for (const [wx, wz] of [[-1.2, 0.7], [1.2, 0.7], [-1.2, -0.7], [1.2, -0.7]]) {
+    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.15, 10), wheelMat);
+    wheel.rotation.z = Math.PI / 2;
+    wheel.position.set(-18 + wx, 0.25, 5 + wz);
+    group.add(wheel);
+  }
+
+  for (const [fx, fz, fcolor] of [
+    [-20, -15, 0xff4444], [20, -15, 0x44ff44], [-25, 10, 0x4444ff], [25, 10, 0xffff44],
+  ]) {
+    const pole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.04, 2, 6),
+      baseMat
+    );
+    pole.position.set(fx, 1, fz);
+    group.add(pole);
+
+    const flag = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.8, 0.5),
+      new THREE.MeshStandardMaterial({ color: fcolor, side: THREE.DoubleSide })
+    );
+    flag.position.set(fx + 0.4, 1.7, fz);
+    group.add(flag);
+  }
+
+  const crystalMat = new THREE.MeshStandardMaterial({
+    color: 0x88ddff,
+    emissive: 0x4488cc,
+    emissiveIntensity: 0.3,
+    transparent: true,
+    opacity: 0.7,
+    roughness: 0.1,
+    metalness: 0.5,
+  });
+  const crystals = [];
+  for (let i = 0; i < 8; i++) {
+    const ang = rand() * Math.PI * 2;
+    const dist = 15 + rand() * 15;
+    const size = 0.3 + rand() * 0.6;
+    const crystal = new THREE.Mesh(
+      new THREE.ConeGeometry(size * 0.4, size * 2, 6),
+      crystalMat.clone()
+    );
+    crystal.position.set(Math.cos(ang) * dist, size, Math.sin(ang) * dist);
+    crystal.rotation.z = (rand() - 0.5) * 0.3;
+    crystal.castShadow = true;
+    group.add(crystal);
+    crystals.push(crystal);
+  }
+  animate((elapsed) => {
+    for (const c of crystals) {
+      c.material.emissiveIntensity = 0.2 + Math.sin(elapsed * 0.8 + c.position.x) * 0.2;
+    }
+  });
+
+  const dishMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.4, metalness: 0.6 });
+  const dishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3, 8), baseMat);
+  dishPole.position.set(18, 1.5, -5);
+  group.add(dishPole);
+
+  const dish = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), dishMat);
+  dish.position.set(18, 3, -5);
+  dish.rotation.x = Math.PI;
+  group.add(dish);
+
+  const dishCenter = new THREE.Mesh(
+    new THREE.SphereGeometry(0.15, 8, 6),
+    new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 0.5 })
+  );
+  dishCenter.position.set(18, 3, -5);
+  group.add(dishCenter);
+
+  animate((elapsed) => {
+    dish.rotation.y = elapsed * 0.2;
+  });
+
+  const hydroMat = new THREE.MeshStandardMaterial({ color: 0x228833, roughness: 0.7 });
+  const hydroBase = new THREE.Mesh(
+    new THREE.BoxGeometry(3, 0.3, 2),
+    baseMat
+  );
+  hydroBase.position.set(-15, 0.15, -12);
+  group.add(hydroBase);
+
+  for (let i = 0; i < 6; i++) {
+    const plant = new THREE.Mesh(
+      new THREE.SphereGeometry(0.25, 8, 6),
+      hydroMat.clone()
+    );
+    plant.position.set(-16.2 + i * 0.8, 0.5, -12);
+    plant.scale.y = 1.3;
+    group.add(plant);
+  }
+
+  const hydroGlass = new THREE.Mesh(
+    new THREE.BoxGeometry(3.2, 1.5, 2.2),
+    new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.2 })
+  );
+  hydroGlass.position.set(-15, 0.9, -12);
+  group.add(hydroGlass);
+
+  const roverTrackMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.9 });
+  const roverTracks = [];
+  for (let i = 0; i < 20; i++) {
+    const track = new THREE.Mesh(
+      new THREE.BoxGeometry(0.08, 0.05, 0.3),
+      roverTrackMat
+    );
+    const tx = -20 - i * 0.25;
+    track.position.set(tx, 0.05, 5);
+    group.add(track);
+    roverTracks.push(track);
+  }
+
+  const benchMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
+  for (const [bx, bz] of [[3, 5], [-5, 6], [8, 3]]) {
+    const bench = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, 0.1, 0.5),
+      benchMat
+    );
+    bench.position.set(bx, 0.5, bz);
+    group.add(bench);
+
+    for (const side of [-0.6, 0.6]) {
+      const leg = new THREE.Mesh(
+        new THREE.BoxGeometry(0.08, 0.5, 0.08),
+        benchMat
+      );
+      leg.position.set(bx + side, 0.25, bz);
+      group.add(leg);
+    }
+  }
+
+  const cargoBoxMat = new THREE.MeshStandardMaterial({ color: 0x996633, roughness: 0.9 });
+  for (let i = 0; i < 5; i++) {
+    const box = new THREE.Mesh(
+      new THREE.BoxGeometry(0.6, 0.5, 0.6),
+      cargoBoxMat
+    );
+    box.position.set(-2 + (i % 3) * 0.7, 0.25, 10 + Math.floor(i / 3) * 0.7);
+    box.rotation.y = rand() * 0.5;
+    box.castShadow = true;
+    group.add(box);
+  }
+
   scene.add(group);
 
   return {
