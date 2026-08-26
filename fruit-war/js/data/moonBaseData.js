@@ -7,7 +7,9 @@ export const MOON_NPCS = [
     home: { x: -3, z: -12 },
     schedule: [
       { at: 0, x: -3, z: -12, face: 0, act: "work" },
-      { at: 1440, x: -3, z: -12, face: 0, act: "work" },
+      { at: 600, x: 0, z: -5, face: Math.PI, act: "walk" },
+      { at: 900, x: 0, z: -10, face: 0, act: "work" },
+      { at: 1320, x: -3, z: -12, face: 0, act: "rest" },
     ],
     lines: [
       "歡迎來到月球基地！這裡是果汁島的太空前哨站。",
@@ -51,6 +53,116 @@ export const MOON_NPCS = [
       "月球上沒有大氣層，所以背景可以看到銀河。",
     ],
   },
+  {
+    id: "moon_guard",
+    name: "月球守衛西瓜",
+    fruit: "watermelon",
+    speed: 1.8,
+    home: { x: 3, z: 12 },
+    schedule: [
+      { at: 0, x: 3, z: 12, face: Math.PI, act: "work" },
+      { at: 480, x: -8, z: 8, face: 0, act: "walk" },
+      { at: 720, x: 8, z: 8, face: Math.PI, act: "walk" },
+      { at: 1080, x: 3, z: 12, face: Math.PI, act: "work" },
+      { at: 1320, x: 3, z: 12, face: 0, act: "rest" },
+    ],
+    lines: [
+      "月球基地的安全由我負責！降落平台附近禁止奔跑。",
+      "注意！隕石坑附近可能有輻射，別靠太近。",
+      "回到果汁島記得帶紀念品給我喔！",
+    ],
+  },
+  {
+    id: "space_trader",
+    name: "太空商人芒果",
+    fruit: "mango",
+    speed: 1.4,
+    home: { x: 8, z: -6 },
+    schedule: [
+      { at: 0, x: 8, z: -6, face: Math.PI, act: "work" },
+      { at: 600, x: 6, z: -10, face: 0, act: "work" },
+      { at: 900, x: 10, z: -8, face: Math.PI * 0.5, act: "walk" },
+      { at: 1200, x: 8, z: -6, face: 0, act: "rest" },
+    ],
+    lines: [
+      "想買太空紀念品嗎？我這裡什麼都有！",
+      "聽說火山島那邊有稀有的礦石，你要不要去看看？",
+      "太空裡的寶物比果汁島多太多了～",
+    ],
+  },
+  {
+    id: "robot",
+    name: "機器人 R-2",
+    fruit: "coconut",
+    speed: 1,
+    home: { x: -8, z: -6 },
+    schedule: [
+      { at: 0, x: -8, z: -6, face: 0, act: "work" },
+      { at: 480, x: -3, z: -10, face: Math.PI, act: "work" },
+      { at: 900, x: 5, z: -12, face: 0, act: "work" },
+      { at: 1320, x: -8, z: -6, face: 0, act: "rest" },
+    ],
+    lines: [
+      "滴——我是維護機器人 R-2，負責基地日常維修。",
+      "基地的太陽能板需要定期清理灰塵。",
+      "我的程式裡沒有「玩樂」指令……滴。",
+    ],
+  },
+  {
+    id: "explorer",
+    name: "探險家草莓",
+    fruit: "strawberry",
+    speed: 2.2,
+    home: { x: -10, z: 5 },
+    schedule: [
+      { at: 0, x: -10, z: 5, face: 0, act: "walk" },
+      { at: 360, x: -15, z: -5, face: Math.PI * 0.5, act: "walk" },
+      { at: 600, x: 10, z: -18, face: 0, act: "walk" },
+      { at: 900, x: -5, z: 10, face: Math.PI, act: "walk" },
+      { at: 1200, x: -10, z: 5, face: 0, act: "rest" },
+    ],
+    lines: [
+      "我在探索月球的每一個隕石坑！超好玩的～",
+      "你有沒有發現漂浮的岩石？它們好像有生命耶！",
+      "我想找一顆隕石帶回去當紀念品！",
+    ],
+  },
+  {
+    id: "astronomer",
+    name: "天文學家櫻桃",
+    fruit: "cherry",
+    speed: 1.6,
+    home: { x: 12, z: 3 },
+    schedule: [
+      { at: 0, x: 12, z: 3, face: Math.PI * 0.5, act: "work" },
+      { at: 600, x: 8, z: 8, face: 0, act: "walk" },
+      { at: 900, x: 12, z: 3, face: Math.PI * 0.5, act: "work" },
+      { at: 1320, x: 12, z: 3, face: 0, act: "rest" },
+    ],
+    lines: [
+      "銀河真是壯觀啊……在果汁島根本看不到這樣的星空。",
+      "我正在觀測一顆即將經過的彗星！",
+      "你知道嗎？月球上的一天等於地球的28天喔！",
+    ],
+  },
+  {
+    id: "chef",
+    name: "太空廚師柳橙",
+    fruit: "orange",
+    speed: 2,
+    home: { x: -4, z: -15 },
+    schedule: [
+      { at: 0, x: -4, z: -15, face: 0, act: "work" },
+      { at: 600, x: 0, z: -10, face: Math.PI, act: "work" },
+      { at: 900, x: -4, z: -15, face: 0, act: "work" },
+      { at: 1200, x: -4, z: -15, face: 0, act: "rest" },
+    ],
+    lines: [
+      "太空料理需要特殊的技巧！低重力下液體會飄起來。",
+      "今天的特餐是月球火山沙拉！辣度堪比火山島。",
+      "你想嚐嚐太空冰淇淋嗎？它是用液態氮做的！",
+    ],
+  },
 ];
 
 export const MOON_SHOPS = [
@@ -64,6 +176,18 @@ export const MOON_SHOPS = [
       { id: "moon_shield", icon: "🛡️", name: "月球護盾", desc: "防禦 +60%（90 秒）", price: 30, effect: { name: "月球護盾", icon: "🛡️", duration: 90, defenseMul: 1.6 } },
       { id: "star_boots", icon: "👢", name: "星辰之靴", desc: "速度 +50%（60 秒）", price: 28, effect: { name: "星辰之靴", icon: "👢", duration: 60, speedMul: 1.5 } },
       { id: "galaxy_potion", icon: "🧪", name: "銀河藥水", desc: "HP 全滿 + 攻擊 +40%（60 秒）", price: 45, effect: { heal: 999, name: "銀河藥水", icon: "🧪", duration: 60, attackMul: 1.4 } },
+    ],
+  },
+  {
+    id: "souvenir_shop",
+    name: "紀念品店",
+    x: 10,
+    z: -6,
+    radius: 2.5,
+    items: [
+      { id: "moon_stone", icon: "🌑", name: "月球石頭", desc: "攻擊 +25%（90 秒）", price: 20, effect: { name: "月球石頭", icon: "🌑", duration: 90, attackMul: 1.25 } },
+      { id: "star_dust", icon: "✨", name: "星塵粉末", desc: "回復 60 HP", price: 22, effect: { heal: 60 } },
+      { id: "comet_tea", icon: "🍵", name: "彗星綠茶", desc: "全能力 +15%（45 秒）", price: 35, effect: { name: "彗星綠茶", icon: "🍵", duration: 45, speedMul: 1.15, attackMul: 1.15, defenseMul: 1.15 } },
     ],
   },
 ];
