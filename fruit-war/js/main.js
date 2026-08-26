@@ -156,6 +156,7 @@ function boot() {
     }
 
     controller.lowGravity = rocket.isOnMoon;
+    controller.groundLevel = rocket.isOnMoon ? 200 : 0;
 
     if (rocket.isOnMoon) {
       controller.update(dt, input, map.moonData ? map.moonData.moonRadius : 45, map.collisions, playerState);

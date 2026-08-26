@@ -33,6 +33,7 @@ export class PlayerController {
     this._snapped = false;
     this.interiorCollisions = [];
     this.lowGravity = false;
+    this.groundLevel = 0;
   }
 
   update(dt, input, boundsRadius, collisions, playerState) {
@@ -135,8 +136,8 @@ export class PlayerController {
     }
     c.velocityY -= GRAVITY * gravityMul * dt;
     pos.y += c.velocityY * dt;
-    if (pos.y <= 0) {
-      pos.y = 0;
+    if (pos.y <= this.groundLevel) {
+      pos.y = this.groundLevel;
       c.velocityY = 0;
       c.onGround = true;
     }
