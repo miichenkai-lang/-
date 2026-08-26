@@ -119,22 +119,22 @@ export function buildMoonBase(scene, { animate }) {
   });
 
   const dome = new THREE.Mesh(
-    new THREE.SphereGeometry(8, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.SphereGeometry(10, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2),
     glassMat
   );
   dome.position.set(0, 0, -10);
   group.add(dome);
 
   const domeBase = new THREE.Mesh(
-    new THREE.CylinderGeometry(8, 8.4, 0.5, 24),
+    new THREE.CylinderGeometry(10, 10.4, 0.5, 24),
     baseMat
   );
   domeBase.position.set(0, 0, -10);
   group.add(domeBase);
-  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 8.5);
+  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 10.5);
 
   const innerFloor = new THREE.Mesh(
-    new THREE.CircleGeometry(7.8, 24),
+    new THREE.CircleGeometry(9.8, 24),
     new THREE.MeshStandardMaterial({ color: 0x3a4a5a, roughness: 0.8 })
   );
   innerFloor.rotation.x = -Math.PI / 2;
