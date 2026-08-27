@@ -151,6 +151,7 @@ export function buildMoonBase(scene, { animate }) {
   cmdTower.position.set(0, 2.5, -10);
   cmdTower.castShadow = true;
   group.add(cmdTower);
+  moonCollide(0, -10, 1.5);
 
   const antenna = new THREE.Mesh(
     new THREE.CylinderGeometry(0.05, 0.05, 3, 6),
@@ -183,6 +184,7 @@ export function buildMoonBase(scene, { animate }) {
     panel.position.set(side * 8, 2.5, -10);
     panel.rotation.z = side * 0.3;
     group.add(panel);
+    moonCollide(side * 8, -10, 1.2);
 
     const pole = new THREE.Mesh(
       new THREE.CylinderGeometry(0.06, 0.06, 2.5, 6),
@@ -265,11 +267,7 @@ export function buildMoonBase(scene, { animate }) {
     rock.castShadow = true;
     rock.receiveShadow = true;
     group.add(rock);
-    noOpCollide(MOON_OFFSET_X + rock.position.x, MOON_OFFSET_Z + rock.position.z, size * 0.8);
-    const rockDistToDome = Math.hypot(rock.position.x, rock.position.z - (-10));
-    if (rockDistToDome > 10) {
-      moonCollide(rock.position.x, rock.position.z, size * 0.8);
-    }
+    moonCollide(rock.position.x, rock.position.z, size * 0.8);
   }
 
   const landingPad = new THREE.Mesh(
@@ -286,6 +284,7 @@ export function buildMoonBase(scene, { animate }) {
   const signBoard = createTextBoard("月球基地", 3, 1.2, { bg: "#1a1a2e", fg: "#ccccff" });
   signBoard.position.set(0, 2.5, 8);
   group.add(signBoard);
+  moonCollide(0, 8, 1);
 
   const craterLights = [];
   for (let i = 0; i < 6; i++) {
@@ -353,6 +352,7 @@ export function buildMoonBase(scene, { animate }) {
     );
     flag.position.set(fx + 0.4, 1.7, fz);
     group.add(flag);
+    moonCollide(fx, fz, 0.5);
   }
 
   const crystalMat = new THREE.MeshStandardMaterial({
@@ -452,6 +452,7 @@ export function buildMoonBase(scene, { animate }) {
     );
     bench.position.set(bx, 0.5, bz);
     group.add(bench);
+    moonCollide(bx, bz, 0.8);
 
     for (const side of [-0.6, 0.6]) {
       const leg = new THREE.Mesh(
@@ -473,6 +474,7 @@ export function buildMoonBase(scene, { animate }) {
     box.rotation.y = rand() * 0.5;
     box.castShadow = true;
     group.add(box);
+    moonCollide(box.position.x, box.position.z, 0.45);
   }
 
   scene.add(group);

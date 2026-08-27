@@ -168,7 +168,7 @@ function boot() {
     controller.groundLevel = rocket.isOnMoon ? 200 : 0;
 
     if (rocket.isOnMoon) {
-      if (controller._snapped && !controller._moonSnapped) {
+      if (!controller._moonSnapped) {
         const pos = player.group.position;
         const cp = Math.cos(controller.pitch);
         controller._camPos.set(
