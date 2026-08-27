@@ -215,7 +215,9 @@ function boot() {
 
     const menuOpen = anyMenuOpen();
     controller.enabled = !menuOpen;
-    controller.update(dt, input, map.islandRadius, map.collisions, playerState);
+    if (!rocket.isOnMoon) {
+      controller.update(dt, input, map.islandRadius, map.collisions, playerState);
+    }
 
     if (dialogue.active) {
       dialogue.handleInput(input);
