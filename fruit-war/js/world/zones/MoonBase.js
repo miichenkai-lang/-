@@ -47,11 +47,11 @@ export function buildMoonBase(scene, { animate }) {
   moonBase.position.y = -6;
   group.add(moonBase);
 
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 5; i++) {
     const craterR = 1.5 + rand() * 3.5;
     const craterD = 0.2 + rand() * 0.4;
     const ang = rand() * Math.PI * 2;
-    const dist = 5 + rand() * (MOON_RADIUS - 15);
+    const dist = 30 + rand() * (MOON_RADIUS - 38);
     const cx = Math.cos(ang) * dist;
     const cz = Math.sin(ang) * dist;
 
