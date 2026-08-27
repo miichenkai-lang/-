@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { mulberry32, createTextBoard } from "../WorldUtils.js";
+import { CollisionSystem } from "../../systems/CollisionSystem.js";
 
 const MOON_OFFSET_X = 0;
 const MOON_OFFSET_Y = 200;
@@ -14,7 +15,10 @@ export function buildMoonBase(scene, { animate }) {
   group.position.copy(MOON_OFFSET);
   group.visible = false;
 
-  const noOpCollide = () => {};
+  const moonCollisions = new CollisionSystem();
+  const moonCollide = (x, z, r) => moonCollisions.addCircle(
+    MOON_OFFSET_X + x, MOON_OFFSET_Z + z, r
+  );
 
   const moonMat = new THREE.MeshStandardMaterial({
     color: 0xc8c8c8,
@@ -131,7 +135,6 @@ export function buildMoonBase(scene, { animate }) {
   );
   domeBase.position.set(0, 0, -10);
   group.add(domeBase);
-  noOpCollide(MOON_OFFSET_X, -10 + MOON_OFFSET_Z, 10.5);
 
   const innerFloor = new THREE.Mesh(
     new THREE.CircleGeometry(9.8, 24),
@@ -196,6 +199,7 @@ export function buildMoonBase(scene, { animate }) {
   observatory.position.set(25, 1.25, 8);
   observatory.castShadow = true;
   group.add(observatory);
+  moonCollide(25, 8, 3.5);
 
   const observatoryDome = new THREE.Mesh(
     new THREE.SphereGeometry(3, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
@@ -219,6 +223,7 @@ export function buildMoonBase(scene, { animate }) {
   waterTank.position.set(-20, 1.25, -5);
   waterTank.castShadow = true;
   group.add(waterTank);
+  moonCollide(-20, -5, 1.5);
 
   const waterTankTop = new THREE.Mesh(
     new THREE.ConeGeometry(1.2, 0.6, 10),
@@ -234,6 +239,7 @@ export function buildMoonBase(scene, { animate }) {
   storage.position.set(-15, 1.1, 8);
   storage.castShadow = true;
   group.add(storage);
+  moonCollide(-15, 8, 2.2);
 
   const storageDoor = new THREE.Mesh(
     new THREE.BoxGeometry(1.5, 1.8, 0.1),
@@ -260,6 +266,10 @@ export function buildMoonBase(scene, { animate }) {
     rock.receiveShadow = true;
     group.add(rock);
     noOpCollide(MOON_OFFSET_X + rock.position.x, MOON_OFFSET_Z + rock.position.z, size * 0.8);
+    const rockDistToDome = Math.hypot(rock.position.x, rock.position.z - (-10));
+    if (rockDistToDome > 10) {
+      moonCollide(rock.position.x, rock.position.z, size * 0.8);
+    }
   }
 
   const landingPad = new THREE.Mesh(
@@ -310,6 +320,7 @@ export function buildMoonBase(scene, { animate }) {
   roverBody.position.set(-18, 0.5, 5);
   roverBody.castShadow = true;
   group.add(roverBody);
+  moonCollide(-18, 5, 1.5);
 
   const roverCab = new THREE.Mesh(
     new THREE.BoxGeometry(1, 0.5, 1),
@@ -378,6 +389,7 @@ export function buildMoonBase(scene, { animate }) {
   const dishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3, 8), baseMat);
   dishPole.position.set(18, 1.5, -5);
   group.add(dishPole);
+  moonCollide(18, -5, 1.5);
 
   const dish = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), dishMat);
   dish.position.set(18, 3, -5);
@@ -402,6 +414,7 @@ export function buildMoonBase(scene, { animate }) {
   );
   hydroBase.position.set(-15, 0.15, -12);
   group.add(hydroBase);
+  moonCollide(-15, -12, 1.8);
 
   for (let i = 0; i < 6; i++) {
     const plant = new THREE.Mesh(
@@ -468,6 +481,7 @@ export function buildMoonBase(scene, { animate }) {
     group,
     spawnPoint: new THREE.Vector3(0, 0.15, 15).add(MOON_OFFSET),
     moonRadius: MOON_RADIUS,
+    collisions: moonCollisions,
   };
 }
 
