@@ -168,6 +168,17 @@ function boot() {
     controller.groundLevel = rocket.isOnMoon ? 200 : 0;
 
     if (rocket.isOnMoon) {
+      if (controller._snapped && !controller._moonSnapped) {
+        const pos = player.group.position;
+        const cp = Math.cos(controller.pitch);
+        controller._camPos.set(
+          pos.x + Math.sin(controller.yaw) * cp * 8.5,
+          pos.y + Math.sin(controller.pitch) * 8.5 + 1.4,
+          pos.z + Math.cos(controller.yaw) * cp * 8.5
+        );
+        controller._camTarget.set(pos.x, pos.y + 1.5, pos.z);
+        controller._moonSnapped = true;
+      }
       controller.update(dt, input, map.moonData ? map.moonData.moonRadius : 65, map.moonData ? map.moonData.collisions : null, playerState);
 
       if (dialogue.active) {
@@ -212,6 +223,7 @@ function boot() {
     timeSystem.update(dt);
     playerState.tick(dt);
     npcs.update(dt, timeSystem.minutes);
+    controller._moonSnapped = false;
 
     const menuOpen = anyMenuOpen();
     controller.enabled = !menuOpen;

@@ -254,6 +254,8 @@ export class RocketSystem {
     this.player.group.rotation.y = 0;
     this.player.group.scale.set(1, 1, 1);
     this.player.group.visible = true;
+    this.player.velocityY = 0;
+    this.player.onGround = true;
 
     this.isOnMoon = true;
     this.isTransitioning = false;
