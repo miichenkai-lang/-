@@ -477,6 +477,14 @@ export function buildMoonBase(scene, { animate }) {
     moonCollide(box.position.x, box.position.z, 0.45);
   }
 
+  const spaceShop = buildSpaceShop(group, moonCollide);
+  animate((elapsed) => {
+    for (const h of spaceShop.holos) {
+      h.rotation.y += 0.008;
+      h.position.y = h._baseY + Math.sin(elapsed * 1.5 + h._phase) * 0.1;
+    }
+  });
+
   scene.add(group);
 
   return {
@@ -485,6 +493,65 @@ export function buildMoonBase(scene, { animate }) {
     moonRadius: MOON_RADIUS,
     collisions: moonCollisions,
   };
+}
+
+function buildSpaceShop(group, moonCollide) {
+  const sgroup = new THREE.Group();
+
+  const stone = new THREE.MeshStandardMaterial({ color: 0x9aa4b0, roughness: 0.9, flatShading: true });
+  const stoneDark = new THREE.MeshStandardMaterial({ color: 0x7c858f, roughness: 0.9, flatShading: true });
+  const glow = new THREE.MeshStandardMaterial({ color: 0xbfe9ff, emissive: 0x6fd0ff, emissiveIntensity: 1.2 });
+
+  const bed = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.2, 0.5, 24), stoneDark);
+  bed.position.set(0, 0.25, 0);
+  bed.castShadow = true;
+  bed.receiveShadow = true;
+  sgroup.add(bed);
+
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.16, 24), stone);
+  rim.position.set(0, 0.08, 0);
+  rim.receiveShadow = true;
+  sgroup.add(rim);
+
+  const holos = [];
+  const tints = [0xff6f91, 0x7ad0ff, 0xffe066, 0x9d6bff, 0x6bff9d, 0xff9d6b];
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const crystal = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.14, 0),
+      new THREE.MeshStandardMaterial({ color: tints[i], emissive: tints[i], emissiveIntensity: 1.5, roughness: 0.2 })
+    );
+    crystal.position.set(Math.cos(a) * 1.5, 0.9, Math.sin(a) * 1.5);
+    crystal.scale.y = 1.6;
+    crystal._baseY = 0.9;
+    crystal._phase = (i / 6) * Math.PI * 2;
+    sgroup.add(crystal);
+    holos.push(crystal);
+
+    const holder = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 0.6, 6), stoneDark);
+    holder.position.set(Math.cos(a) * 1.5, 0.5, Math.sin(a) * 1.5);
+    sgroup.add(holder);
+  }
+
+  const centerGlow = new THREE.Mesh(new THREE.CircleGeometry(0.7, 24), glow);
+  centerGlow.rotation.x = -Math.PI / 2;
+  centerGlow.position.y = 0.53;
+  sgroup.add(centerGlow);
+
+  const sign = createTextBoard("太空商店", 2.2, 0.8, { bg: "#10263d", fg: "#bfe9ff", fontSize: 48 });
+  sign.position.set(0, 3.15, 0);
+  sgroup.add(sign);
+
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 2.7, 8), stoneDark);
+  post.position.set(0, 1.8, 0);
+  sgroup.add(post);
+
+  sgroup.position.set(6, 0, -10);
+  group.add(sgroup);
+
+  moonCollide(6, -10, 2.0);
+
+  return { holos };
 }
 
 function createStarField(rand) {
