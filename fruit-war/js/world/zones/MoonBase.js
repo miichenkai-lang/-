@@ -250,25 +250,22 @@ export function buildMoonBase(scene, { animate }) {
   storageDoor.position.set(-15, 0.9, 6.3);
   group.add(storageDoor);
 
-  for (let i = 0; i < 12; i++) {
-    const size = 0.4 + rand() * 0.8;
-    const rock = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(size, 0),
-      new THREE.MeshStandardMaterial({
-        color: 0x888888,
-        roughness: 0.95,
-        flatShading: true,
-      })
-    );
-    const ang = rand() * Math.PI * 2;
-    const dist = 8 + rand() * (MOON_RADIUS - 20);
-    rock.position.set(Math.cos(ang) * dist, size * 0.4, Math.sin(ang) * dist);
-    rock.rotation.set(rand() * Math.PI, rand() * Math.PI, rand() * Math.PI);
+  const rockMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.95, flatShading: true });
+  const addRock = (x, z, size) => {
+    const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(size, 0), rockMat);
+    rock.position.set(x, size * 0.4, z);
+    rock.rotation.set(rand() * 0.8, rand() * Math.PI, rand() * 0.5);
     rock.castShadow = true;
     rock.receiveShadow = true;
     group.add(rock);
-    moonCollide(rock.position.x, rock.position.z, size * 0.8);
-  }
+    moonCollide(x, z, size * 0.8);
+  };
+
+  const rockLine = [[-2.6, 13, 0.7], [2.6, 13, 0.7], [-3.2, 10, 0.55], [3.2, 10, 0.55], [-3.8, 6, 0.6], [3.8, 6, 0.6], [-3.4, 2, 0.5], [3.4, 2, 0.5]];
+  for (const [rx, rz, rs] of rockLine) addRock(rx, rz, rs);
+
+  const scatter = [[-28, 30, 1.2], [30, 26, 1.0], [26, -22, 1.3], [-26, -26, 1.1], [34, -34, 0.9], [-34, 34, 1.0]];
+  for (const [rx, rz, rs] of scatter) addRock(rx, rz, rs);
 
   const landingPad = new THREE.Mesh(
     new THREE.CylinderGeometry(3, 3, 0.15, 24),
@@ -280,6 +277,15 @@ export function buildMoonBase(scene, { animate }) {
   const rocket = createRocket();
   rocket.position.set(0, 0.15, 15);
   group.add(rocket);
+
+  const pathTileMat = new THREE.MeshStandardMaterial({ color: 0x9aa4b0, roughness: 0.9, flatShading: true });
+  for (let i = 0; i < 12; i++) {
+    const tile = new THREE.Mesh(new THREE.CircleGeometry(0.7, 8), pathTileMat);
+    tile.rotation.x = -Math.PI / 2;
+    tile.position.set(0, 0.04, 14 - i * 2);
+    tile.receiveShadow = true;
+    group.add(tile);
+  }
 
   const signBoard = createTextBoard("月球基地", 3, 1.2, { bg: "#1a1a2e", fg: "#ccccff" });
   signBoard.position.set(0, 2.5, 8);
@@ -365,18 +371,17 @@ export function buildMoonBase(scene, { animate }) {
     metalness: 0.5,
   });
   const crystals = [];
-  for (let i = 0; i < 8; i++) {
-    const ang = rand() * Math.PI * 2;
-    const dist = 15 + rand() * 15;
-    const size = 0.3 + rand() * 0.6;
+  const crystalSpots = [[-2.0, 3, 0.5], [2.0, 3, 0.5], [-3.5, 6, 0.4], [3.5, 6, 0.4]];
+  for (const [cx_, cz_, size] of crystalSpots) {
     const crystal = new THREE.Mesh(
       new THREE.ConeGeometry(size * 0.4, size * 2, 6),
       crystalMat.clone()
     );
-    crystal.position.set(Math.cos(ang) * dist, size, Math.sin(ang) * dist);
-    crystal.rotation.z = (rand() - 0.5) * 0.3;
+    crystal.position.set(cx_, size, cz_);
+    crystal.rotation.z = 0.1;
     crystal.castShadow = true;
     group.add(crystal);
+    moonCollide(cx_, cz_, size * 0.5);
     crystals.push(crystal);
   }
   animate((elapsed) => {
@@ -479,9 +484,9 @@ export function buildMoonBase(scene, { animate }) {
 
   const spaceShop = buildSpaceShop(group, moonCollide);
   animate((elapsed) => {
-    for (const h of spaceShop.holos) {
-      h.rotation.y += 0.008;
-      h.position.y = h._baseY + Math.sin(elapsed * 1.5 + h._phase) * 0.1;
+    if (spaceShop.holo) {
+      spaceShop.holo.rotation.y = elapsed * 1.2;
+      spaceShop.holo.position.y = spaceShop.holo._baseY + Math.sin(elapsed * 2) * 0.15;
     }
   });
 
@@ -498,60 +503,82 @@ export function buildMoonBase(scene, { animate }) {
 function buildSpaceShop(group, moonCollide) {
   const sgroup = new THREE.Group();
 
-  const stone = new THREE.MeshStandardMaterial({ color: 0x9aa4b0, roughness: 0.9, flatShading: true });
-  const stoneDark = new THREE.MeshStandardMaterial({ color: 0x7c858f, roughness: 0.9, flatShading: true });
-  const glow = new THREE.MeshStandardMaterial({ color: 0xbfe9ff, emissive: 0x6fd0ff, emissiveIntensity: 1.2 });
+  const metal = new THREE.MeshStandardMaterial({ color: 0xb8c2cc, roughness: 0.4, metalness: 0.7 });
+  const darkMetal = new THREE.MeshStandardMaterial({ color: 0x5a6673, roughness: 0.5, metalness: 0.6 });
+  const edgeGlow = new THREE.MeshStandardMaterial({ color: 0x7ad0ff, emissive: 0x2fa0ff, emissiveIntensity: 1.6, metalness: 0.4 });
+  const lampMat = new THREE.MeshStandardMaterial({ color: 0xfff6d8, emissive: 0xffe9a8, emissiveIntensity: 2.2 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0xe8f6ff, transparent: true, opacity: 0.35, roughness: 0.1 });
 
-  const bed = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.2, 0.5, 24), stoneDark);
-  bed.position.set(0, 0.25, 0);
-  bed.castShadow = true;
-  bed.receiveShadow = true;
-  sgroup.add(bed);
+  const platform = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.3, 0.28, 32), metal);
+  platform.position.set(0, 0.14, 0);
+  platform.castShadow = true;
+  platform.receiveShadow = true;
+  sgroup.add(platform);
 
-  const rim = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.3, 0.16, 24), stone);
-  rim.position.set(0, 0.08, 0);
-  rim.receiveShadow = true;
-  sgroup.add(rim);
+  const baseRing = new THREE.Mesh(new THREE.TorusGeometry(2.25, 0.07, 8, 48), edgeGlow);
+  baseRing.rotation.x = Math.PI / 2;
+  baseRing.position.y = 0.29;
+  sgroup.add(baseRing);
 
-  const holos = [];
-  const tints = [0xff6f91, 0x7ad0ff, 0xffe066, 0x9d6bff, 0x6bff9d, 0xff9d6b];
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2;
-    const crystal = new THREE.Mesh(
-      new THREE.OctahedronGeometry(0.14, 0),
-      new THREE.MeshStandardMaterial({ color: tints[i], emissive: tints[i], emissiveIntensity: 1.5, roughness: 0.2 })
-    );
-    crystal.position.set(Math.cos(a) * 1.5, 0.9, Math.sin(a) * 1.5);
-    crystal.scale.y = 1.6;
-    crystal._baseY = 0.9;
-    crystal._phase = (i / 6) * Math.PI * 2;
-    sgroup.add(crystal);
-    holos.push(crystal);
+  const floorGlow = new THREE.Mesh(new THREE.RingGeometry(1.6, 1.9, 40), edgeGlow);
+  floorGlow.rotation.x = -Math.PI / 2;
+  floorGlow.position.y = 0.285;
+  sgroup.add(floorGlow);
 
-    const holder = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 0.6, 6), stoneDark);
-    holder.position.set(Math.cos(a) * 1.5, 0.5, Math.sin(a) * 1.5);
-    sgroup.add(holder);
+  const counter = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.0, 1.0, 20), darkMetal);
+  counter.position.set(0, 0.92, 0);
+  counter.castShadow = true;
+  sgroup.add(counter);
+
+  const counterTop = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.9, 0.12, 20), metal);
+  counterTop.position.set(0, 1.48, 0);
+  sgroup.add(counterTop);
+
+  const lampPole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.9, 8), darkMetal);
+  lampPole.position.set(0, 2.4, 0);
+  sgroup.add(lampPole);
+  const topLamp = new THREE.Mesh(new THREE.SphereGeometry(0.32, 14, 12), lampMat);
+  topLamp.position.set(0, 3.35, 0);
+  sgroup.add(topLamp);
+
+  for (const sx of [-0.5, 0.5]) {
+    const sidePole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 1.5, 6), metal);
+    sidePole.position.set(sx, 1.9, -0.55);
+    sgroup.add(sidePole);
   }
+  const canopy = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 0.06, 24), glass);
+  canopy.position.set(0, 2.4, 0);
+  sgroup.add(canopy);
+  const canopyLamp = new THREE.Mesh(new THREE.CircleGeometry(1.5, 24), lampMat);
+  canopyLamp.rotation.x = -Math.PI / 2;
+  canopyLamp.position.set(0, 2.37, 0);
+  sgroup.add(canopyLamp);
 
-  const centerGlow = new THREE.Mesh(new THREE.CircleGeometry(0.7, 24), glow);
-  centerGlow.rotation.x = -Math.PI / 2;
-  centerGlow.position.y = 0.53;
-  sgroup.add(centerGlow);
+  const fanGlow = new THREE.Mesh(new THREE.CircleGeometry(1.1, 24), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.6 }));
+  fanGlow.rotation.x = -Math.PI / 2;
+  fanGlow.position.set(0, 0.3, 0);
+  sgroup.add(fanGlow);
 
-  const sign = createTextBoard("太空商店", 2.2, 0.8, { bg: "#10263d", fg: "#bfe9ff", fontSize: 48 });
-  sign.position.set(0, 3.15, 0);
+  const holoMat = new THREE.MeshStandardMaterial({ emissive: 0xbfe9ff, emissiveIntensity: 1.8, color: 0xffffff, transparent: true, opacity: 0.9 });
+  const holo = new THREE.Mesh(new THREE.OctahedronGeometry(0.34, 0), holoMat);
+  holo.position.set(0, 2.2, 0);
+  holo.scale.y = 1.5;
+  holo._baseY = 2.2;
+  sgroup.add(holo);
+
+  const sign = createTextBoard("太空商店", 2.6, 1.0, { bg: "#083b5e", fg: "#e6fbff", fontSize: 56 });
+  sign.position.set(0, 4.4, 0);
   sgroup.add(sign);
-
-  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 2.7, 8), stoneDark);
-  post.position.set(0, 1.8, 0);
-  sgroup.add(post);
+  const signGlow = new THREE.Mesh(new THREE.RingGeometry(1.5, 1.75, 40), edgeGlow);
+  signGlow.position.set(0, 4.4, -0.1);
+  sgroup.add(signGlow);
 
   sgroup.position.set(6, 0, -10);
   group.add(sgroup);
 
-  moonCollide(6, -10, 2.0);
+  moonCollide(6, -10, 2.3);
 
-  return { holos };
+  return { holo, topLamp };
 }
 
 function createStarField(rand) {
