@@ -274,6 +274,29 @@ export function buildMoonBase(scene, { animate }) {
   landingPad.position.set(0, 0.07, 15);
   group.add(landingPad);
 
+  const landingRing = new THREE.Mesh(
+    new THREE.RingGeometry(3.4, 3.8, 40),
+    new THREE.MeshStandardMaterial({ color: 0xffb347, emissive: 0xff8c00, emissiveIntensity: 1.2 })
+  );
+  landingRing.rotation.x = -Math.PI / 2;
+  landingRing.position.set(0, 0.02, 15);
+  group.add(landingRing);
+
+  const plazaMat = new THREE.MeshStandardMaterial({ color: 0x5a6673, roughness: 0.85, metalness: 0.2 });
+  const plaza = new THREE.Mesh(new THREE.CircleGeometry(5.5, 32), plazaMat);
+  plaza.rotation.x = -Math.PI / 2;
+  plaza.position.set(0, 0.015, -3);
+  plaza.receiveShadow = true;
+  group.add(plaza);
+
+  const plazaEdge = new THREE.Mesh(
+    new THREE.RingGeometry(5.5, 5.75, 40),
+    new THREE.MeshStandardMaterial({ color: 0xfff2cc, emissive: 0xffcf6a, emissiveIntensity: 0.7 })
+  );
+  plazaEdge.rotation.x = -Math.PI / 2;
+  plazaEdge.position.set(0, 0.03, -3);
+  group.add(plazaEdge);
+
   const rocket = createRocket();
   rocket.position.set(0, 0.15, 15);
   group.add(rocket);
@@ -293,11 +316,11 @@ export function buildMoonBase(scene, { animate }) {
   moonCollide(0, 8, 1);
 
   const craterLights = [];
-  for (let i = 0; i < 6; i++) {
-    const ang = (i / 6) * Math.PI * 2;
-    const dist = 18 + rand() * 8;
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2 + Math.PI / 8;
+    const dist = 24;
     const lamp = new THREE.Mesh(
-      new THREE.SphereGeometry(0.15, 8, 6),
+      new THREE.SphereGeometry(0.16, 8, 6),
       lightMat.clone()
     );
     lamp.position.set(Math.cos(ang) * dist, 0.15, Math.sin(ang) * dist);
@@ -439,14 +462,13 @@ export function buildMoonBase(scene, { animate }) {
   group.add(hydroGlass);
 
   const roverTrackMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.9 });
-  for (let i = 0; i < 20; i++) {
-    const track = new THREE.Mesh(
-      new THREE.BoxGeometry(0.08, 0.05, 0.3),
+  for (const side of [-0.6, 0.6]) {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(5.0, 0.05, 0.16),
       roverTrackMat
     );
-    const tx = -20 - i * 0.25;
-    track.position.set(tx, 0.05, 5);
-    group.add(track);
+    rail.position.set(-20 - 2.5 + side * 0.6, 0.05, 5);
+    group.add(rail);
   }
 
   const benchMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
