@@ -11,6 +11,11 @@ export class PlayerState {
     this.attackMul = 1;
     this.defenseMul = 1;
     this.abilityCooldown = 0;
+    this.hasOxygenMask = false;
+    this.hasJetpack = false;
+    this.oxygen = 1;
+    this.jetpackEnergy = 1;
+    this.onMoon = false;
   }
 
   tick(dt) {
@@ -21,6 +26,13 @@ export class PlayerState {
     if (this.buffs.length > 0) {
       this.buffs = this.buffs.filter((b) => b.until > this.time);
       this.recompute();
+    }
+    if (this.hasOxygenMask) {
+      if (this.onMoon) {
+        this.oxygen = Math.max(0, this.oxygen - dt * 0.02);
+      } else {
+        this.oxygen = Math.min(1, this.oxygen + dt * 0.05);
+      }
     }
   }
 

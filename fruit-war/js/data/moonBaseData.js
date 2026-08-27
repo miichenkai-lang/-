@@ -300,6 +300,8 @@ export const MOON_SHOPS = [
     z: -10,
     radius: 2.5,
     items: [
+      { id: "oxygen_mask", icon: "😷", name: "氧氣面罩", desc: "在月球呼吸用，永久裝備", price: 20, effect: { oxygenMask: true, name: "氧氣面罩", icon: "😷" } },
+      { id: "jetpack", icon: "🎒", name: "噴氣背包", desc: "按住 Space 飛行，能量 100% 慢慢耗", price: 50, effect: { jetpack: true, name: "噴氣背包", icon: "🎒" } },
       { id: "moon_shield", icon: "🛡️", name: "月球護盾", desc: "防禦 +60%（90 秒）", price: 30, effect: { name: "月球護盾", icon: "🛡️", duration: 90, defenseMul: 1.6 } },
       { id: "star_boots", icon: "👢", name: "星辰之靴", desc: "速度 +50%（60 秒）", price: 28, effect: { name: "星辰之靴", icon: "👢", duration: 60, speedMul: 1.5 } },
       { id: "galaxy_potion", icon: "🧪", name: "銀河藥水", desc: "HP 全滿 + 攻擊 +40%（60 秒）", price: 45, effect: { heal: 999, name: "銀河藥水", icon: "🧪", duration: 60, attackMul: 1.4 } },

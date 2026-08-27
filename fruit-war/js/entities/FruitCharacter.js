@@ -409,6 +409,110 @@ export class FruitCharacter {
     this.body.add(smile);
   }
 
+  addOxygenMask() {
+    if (this._mask) return this._mask;
+    const glass = new THREE.Mesh(
+      new THREE.SphereGeometry(0.34, 18, 14),
+      new THREE.MeshStandardMaterial({
+        color: 0xcfeaff,
+        transparent: true,
+        opacity: 0.55,
+        roughness: 0.15,
+        metalness: 0.2,
+      })
+    );
+    glass.scale.set(0.95, 0.72, 0.55);
+    glass.position.set(0, 0.32, 0.5);
+    glass.rotation.x = 0.35;
+    glass.castShadow = true;
+    this.body.add(glass);
+
+    const strap = new THREE.Mesh(
+      new THREE.TorusGeometry(0.3, 0.03, 8, 20, Math.PI),
+      new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.8 })
+    );
+    strap.rotation.z = Math.PI / 2;
+    strap.position.set(0, 0.45, 0.05);
+    this.body.add(strap);
+
+    const canister = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.06, 0.07, 0.2, 8),
+      new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: 0.4, metalness: 0.3 })
+    );
+    canister.position.set(-0.18, 0.2, 0.25);
+    canister.rotation.x = 0.4;
+    this.body.add(canister);
+
+    const tube = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.28, 6),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 })
+    );
+    tube.position.set(-0.16, 0.3, 0.4);
+    tube.rotation.x = 0.6;
+    this.body.add(tube);
+
+    this._mask = { glass, strap, canister, tube };
+    return this._mask;
+  }
+
+  addJetpack() {
+    if (this._jetpack) return this._jetpack;
+    const tankMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.5, metalness: 0.6 });
+    const accentMat = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.4, metalness: 0.4 });
+
+    const leftTank = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.55, 10), tankMat);
+    leftTank.position.set(-0.14, 0.82, -0.28);
+    leftTank.rotation.x = 0.25;
+    leftTank.castShadow = true;
+    this.body.add(leftTank);
+
+    const rightTank = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.55, 10), tankMat);
+    rightTank.position.set(0.14, 0.82, -0.28);
+    rightTank.rotation.x = 0.25;
+    rightTank.castShadow = true;
+    this.body.add(rightTank);
+
+    const harness = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.3, 0.1),
+      new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.6, metalness: 0.4 })
+    );
+    harness.position.set(0, 0.82, -0.18);
+    this.body.add(harness);
+
+    const flameMat = new THREE.MeshStandardMaterial({
+      color: 0xffa640,
+      emissive: 0xff6a00,
+      emissiveIntensity: 2,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const leftFlame = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3, 8), flameMat);
+    leftFlame.position.set(-0.14, 0.52, -0.34);
+    leftFlame.rotation.x = Math.PI / 2;
+    leftFlame.visible = false;
+    this.body.add(leftFlame);
+
+    const rightFlame = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3, 8), flameMat);
+    rightFlame.position.set(0.14, 0.52, -0.34);
+    rightFlame.rotation.x = Math.PI / 2;
+    rightFlame.visible = false;
+    this.body.add(rightFlame);
+
+    this._jetpack = { leftTank, rightTank, harness, leftFlame, rightFlame };
+    return this._jetpack;
+  }
+
+  setJetpackFlames(active) {
+    if (!this._jetpack) return;
+    this._jetpack.leftFlame.visible = active;
+    this._jetpack.rightFlame.visible = active;
+    if (active) {
+      const scale = 0.8 + Math.random() * 0.4;
+      this._jetpack.leftFlame.scale.set(scale, scale, scale);
+      this._jetpack.rightFlame.scale.set(scale, scale, scale);
+    }
+  }
+
   animate(dt, intensity) {
     const b = this.body;
 

@@ -8,6 +8,7 @@ export class ShopSystem {
     this.current = null;
     this.playerState = null;
     this.sel = 0;
+    this.onPurchase = null;
   }
 
   nearest(pos) {
@@ -61,8 +62,11 @@ export class ShopSystem {
       return;
     }
     ps.coins -= item.price;
+    if (item.effect.oxygenMask) ps.hasOxygenMask = true;
+    if (item.effect.jetpack) ps.hasJetpack = true;
     if (item.effect.heal) ps.heal(item.effect.heal);
     if (item.effect.duration) ps.applyBuff(item.effect);
+    if (this.onPurchase) this.onPurchase(item);
     this.ui.toast(`${item.icon} 買了 ${item.name}！`);
     this.ui.refreshShop(this.current, ps);
   }

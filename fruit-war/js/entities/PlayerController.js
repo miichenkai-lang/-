@@ -134,12 +134,29 @@ export class PlayerController {
       c.velocityY = c.def.jumpPower * jumpMul;
       c.onGround = false;
     }
+
+    const hasJetpack = playerState && playerState.hasJetpack;
+    const thrusting = hasJetpack && input.isDown("Space") && !c.onGround && playerState.jetpackEnergy > 0;
+    if (hasJetpack && !thrusting && c.onGround) {
+      playerState.jetpackEnergy = Math.min(1, playerState.jetpackEnergy + dt * 0.12);
+    }
+    if (thrusting) {
+      const thrust = this.lowGravity ? 30 : 22;
+      c.velocityY += thrust * dt;
+      c.velocityY = Math.min(c.velocityY, this.lowGravity ? 16 : 12);
+      playerState.jetpackEnergy = Math.max(0, playerState.jetpackEnergy - dt * 0.06);
+      this.character.setJetpackFlames(true);
+    }
+
     c.velocityY -= GRAVITY * gravityMul * dt;
     pos.y += c.velocityY * dt;
     if (pos.y <= this.groundLevel) {
       pos.y = this.groundLevel;
       c.velocityY = 0;
       c.onGround = true;
+      if (hasJetpack) this.character.setJetpackFlames(false);
+    } else if (thrusting) {
+      c.onGround = false;
     }
 
     c.animate(dt, intensity);

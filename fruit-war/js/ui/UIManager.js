@@ -10,6 +10,12 @@ export class UIManager {
     this.timeEl = document.getElementById("stat-time");
     this.hpFill = document.getElementById("hp-fill");
     this.hpText = document.getElementById("hp-text");
+    this.o2Bar = document.getElementById("o2-bar");
+    this.o2Fill = document.getElementById("o2-fill");
+    this.o2Label = document.getElementById("o2-label");
+    this.jetpackBar = document.getElementById("jetpack-bar");
+    this.jetpackFill = document.getElementById("jetpack-fill");
+    this.jetpackLabel = document.getElementById("jetpack-label");
     this.coinsEl = document.getElementById("stat-coins");
     this.buffRow = document.getElementById("buff-row");
     this.abilityEl = document.getElementById("ability-icon");
@@ -216,6 +222,30 @@ export class UIManager {
       this.hpFill.style.background = pct > 50 ? "#5ad46a" : pct > 25 ? "#ffd166" : "#ef5b5b";
       this.hpText.textContent = `${Math.ceil(playerState.hp)}/${playerState.maxHp}`;
       this.coinsEl.textContent = String(playerState.coins);
+
+      if (this.o2Bar) {
+        if (playerState.hasOxygenMask) {
+          this.o2Bar.classList.remove("hidden");
+          const o2 = Math.max(0, Math.min(100, playerState.oxygen * 100));
+          this.o2Fill.style.width = o2 + "%";
+          this.o2Fill.style.background = o2 > 40 ? "#5ad4c9" : "#ef5b5b";
+          this.o2Label.textContent = `😷 O₂ ${Math.round(o2)}%`;
+        } else {
+          this.o2Bar.classList.add("hidden");
+        }
+      }
+
+      if (this.jetpackBar) {
+        if (playerState.hasJetpack) {
+          this.jetpackBar.classList.remove("hidden");
+          const en = Math.max(0, Math.min(100, playerState.jetpackEnergy * 100));
+          this.jetpackFill.style.width = en + "%";
+          this.jetpackFill.style.background = en > 30 ? "#ffb347" : "#ef5b5b";
+          this.jetpackLabel.textContent = `🎒 能量 ${Math.round(en)}%`;
+        } else {
+          this.jetpackBar.classList.add("hidden");
+        }
+      }
 
       const buffs = playerState.buffList();
       this.buffRow.innerHTML = buffs.map((b) => `<span class="buff">${b.icon}${b.remain}s</span>`).join("");

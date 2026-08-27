@@ -97,6 +97,16 @@ function boot() {
   const npcs = new NPCManager(game.scene, map.collisions);
   const dialogue = new DialogueSystem(ui);
   const shops = new ShopSystem(ui);
+  shops.onPurchase = (item) => {
+    if (item.effect.oxygenMask) {
+      player.addOxygenMask();
+      ui.toast("😷 已裝備氧氣面罩！");
+    }
+    if (item.effect.jetpack) {
+      player.addJetpack();
+      ui.toast("🎒 已裝備噴氣背包！按住 Space 飛行！");
+    }
+  };
   const interiorBuilder = new InteriorBuilder();
   const houses = new HouseSystem(ui, game.scene, game.camera, player, controller);
   const rocket = new RocketSystem(ui, game.scene, player);
@@ -166,8 +176,15 @@ function boot() {
 
     controller.lowGravity = rocket.isOnMoon;
     controller.groundLevel = rocket.isOnMoon ? 200 : 0;
+    playerState.onMoon = rocket.isOnMoon;
 
     if (rocket.isOnMoon) {
+      playerState.tick(dt);
+      const playerPos = player.group.position;
+      const insideDome = Math.hypot(playerPos.x - 0, playerPos.z - (-10)) < 9 && playerPos.y < 200.2;
+      if (playerState.hasOxygenMask && insideDome) {
+        playerState.oxygen = Math.min(1, playerState.oxygen + dt * 0.1);
+      }
       if (!controller._moonSnapped) {
         const pos = player.group.position;
         const cp = Math.cos(controller.pitch);

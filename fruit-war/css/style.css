@@ -151,6 +151,35 @@ body {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
+.gauge {
+  position: relative;
+  width: 260px;
+  height: 16px;
+  background: rgba(15, 25, 35, 0.65);
+  border-radius: 999px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+
+.gauge > div {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.gauge > span {
+  position: relative;
+  display: block;
+  text-align: center;
+  line-height: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
 #coins-panel {
   position: static;
   padding: 4px 14px;
