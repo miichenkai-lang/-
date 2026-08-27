@@ -168,7 +168,7 @@ function boot() {
     controller.groundLevel = rocket.isOnMoon ? 200 : 0;
 
     if (rocket.isOnMoon) {
-      controller.update(dt, input, map.moonData ? map.moonData.moonRadius : 45, map.collisions, playerState);
+      controller.update(dt, input, map.moonData ? map.moonData.moonRadius : 65, null, playerState);
 
       if (dialogue.active) {
         dialogue.handleInput(input);
