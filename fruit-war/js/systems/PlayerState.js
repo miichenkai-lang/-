@@ -1,9 +1,12 @@
 import { START_COINS } from "../data/shopData.js";
+import { FRUIT_TYPES } from "../data/fruits.js";
 
 export class PlayerState {
   constructor(def) {
-    this.maxHp = def.maxHp;
-    this.hp = def.maxHp;
+    const resolved = typeof def === "string" ? FRUIT_TYPES[def] || FRUIT_TYPES.apple : def;
+    const baseDef = resolved || FRUIT_TYPES.apple;
+    this.maxHp = baseDef.maxHp ?? 100;
+    this.hp = this.maxHp;
     this.coins = START_COINS;
     this.buffs = [];
     this.time = 0;
