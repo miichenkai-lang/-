@@ -38,7 +38,8 @@ export class PlayerController {
 
   update(dt, input, boundsRadius, collisions, playerState) {
     const delta = input.takeMouseDelta();
-    if (input.locked && this.enabled) {
+    const lookActive = input.isLookActive ? input.isLookActive() : input.locked;
+    if (lookActive && this.enabled) {
       this.yaw -= delta.dx * 0.0026;
       this.pitch += delta.dy * 0.0026;
       this.pitch = Math.min(CAM_MAX_PITCH, Math.max(CAM_MIN_PITCH, this.pitch));

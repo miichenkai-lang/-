@@ -8,11 +8,17 @@ export class InputManager {
     this.mouseDX = 0;
     this.mouseDY = 0;
     this.locked = false;
+    this.fallback = false;
+    this.fallbackActive = false;
     this.onLockChange = null;
 
     window.addEventListener("keydown", (e) => {
       if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
         e.preventDefault();
+      }
+      if (e.code === "Escape" && this.fallback && this.fallbackActive) {
+        this.fallbackActive = false;
+        this._notify();
       }
       if (!e.repeat) this.pressed.add(e.code);
       this.keys.add(e.code);
@@ -25,14 +31,7 @@ export class InputManager {
     });
 
     document.addEventListener("mousedown", (e) => {
-      if (!this.locked && document.pointerLockElement !== domElement) {
-        try {
-          const result = domElement.requestPointerLock();
-          if (result && result.catch) result.catch(() => {});
-        } catch {
-          /* ignore */
-        }
-      }
+      this._requestStart();
       const btn = `mouse${e.button}`;
       if (!this.mouseButtons.has(btn)) this.mouseButtonsPressed.add(btn);
       this.mouseButtons.add(btn);
@@ -46,15 +45,62 @@ export class InputManager {
       this.locked = document.pointerLockElement === domElement;
       this.mouseDX = 0;
       this.mouseDY = 0;
-      if (this.onLockChange) this.onLockChange(this.locked);
+      if (!this.locked) this.fallbackActive = false;
+      this._notify();
+    });
+
+    document.addEventListener("pointerlockerror", () => {
+      this._enableFallback();
     });
 
     document.addEventListener("mousemove", (e) => {
-      if (this.locked) {
+      if (this.locked || (this.fallback && this.fallbackActive)) {
         this.mouseDX += e.movementX;
         this.mouseDY += e.movementY;
       }
     });
+  }
+
+  _requestStart() {
+    if (this.fallback) {
+      this.fallbackActive = true;
+      this.mouseDX = 0;
+      this.mouseDY = 0;
+      this._notify();
+      return;
+    }
+    if (this.locked || document.pointerLockElement === this.domElement) return;
+    try {
+      const result = this.domElement.requestPointerLock?.();
+      if (result && result.catch) {
+        result.catch(() => this._enableFallback());
+      } else if (result === undefined) {
+        // Older API: failure surfaces via the pointerlockerror event.
+      }
+    } catch {
+      this._enableFallback();
+    }
+  }
+
+  _enableFallback() {
+    if (this.fallback) return;
+    this.fallback = true;
+    this.locked = false;
+    this.fallbackActive = true;
+    this.mouseDX = 0;
+    this.mouseDY = 0;
+    document.body.style.cursor = "none";
+    this._notify();
+  }
+
+  _notify() {
+    const active = this.isLookActive();
+    document.body.style.cursor = active ? "none" : "default";
+    if (this.onLockChange) this.onLockChange(active);
+  }
+
+  isLookActive() {
+    return this.locked || (this.fallback && this.fallbackActive);
   }
 
   isDown(code) {
