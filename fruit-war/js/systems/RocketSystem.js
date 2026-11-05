@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { SPACE_PORT_BOOTH, SPACE_PORT_ROCKET, SPACE_PORT_SPAWN } from "../world/zones/SpacePort.js";
 
 export class RocketSystem {
   constructor(ui, scene, player) {
@@ -26,9 +27,20 @@ export class RocketSystem {
     this.moonGroup = moonGroup;
   }
 
+  setIslandRocket(rocket) {
+    this.islandRocket = rocket;
+    this._islandRocketBaseY = rocket ? rocket.position.y : 0.2;
+  }
+
+  _resetIslandRocket() {
+    if (this.islandRocket) {
+      this.islandRocket.position.y = this._islandRocketBaseY;
+    }
+  }
+
   checkTicketBooth(playerPos) {
     if (this.isOnMoon || this.isTransitioning) return false;
-    const ticketPos = { x: -8, z: -4 };
+    const ticketPos = SPACE_PORT_BOOTH;
     const d = Math.hypot(playerPos.x - ticketPos.x, playerPos.z - ticketPos.z);
     return d < 2.5;
   }
@@ -57,8 +69,9 @@ export class RocketSystem {
     this.launchTimer = 2.5;
 
     this._boardStart = this.player.group.position.clone();
-    this._boardEnd = new THREE.Vector3(0, 0.15, 15);
+    this._boardEnd = new THREE.Vector3(SPACE_PORT_ROCKET.x, 0.15, SPACE_PORT_ROCKET.z);
     this._boardJumpStart = performance.now();
+    this._resetIslandRocket();
     this._savedBg = this.scene.background ? this.scene.background.clone() : null;
     this._savedFog = this.scene.fog ? this.scene.fog.clone() : null;
 
@@ -107,8 +120,8 @@ export class RocketSystem {
       }
 
       if (this.launchTimer <= 0) {
-        this.player.group.position.copy(this._boardEnd);
-        this.player.group.position.y = 0.15;
+        this.player.group.position.set(SPACE_PORT_ROCKET.x, 0.15, SPACE_PORT_ROCKET.z);
+        this.player.group.visible = false;
         this.launchPhase = "countdown";
         this.launchTimer = 3;
         this.countdownValue = 3;
@@ -130,12 +143,20 @@ export class RocketSystem {
     } else if (this.launchPhase === "takeoff") {
       this.launchTimer -= dt;
       const t = 1 - Math.max(0, this.launchTimer / 1.5);
-      this.player.group.position.y = this._takeoffStartY + t * 30;
-      this.player.group.scale.setScalar(1 - t * 0.5);
+      const rise = t * t * 34;
+      if (this.islandRocket) {
+        this.islandRocket.position.y = this._islandRocketBaseY + rise;
+      }
+      // The (hidden) character rides along so the camera follows the rocket.
+      this.player.group.position.set(SPACE_PORT_ROCKET.x, 2.2 + rise, SPACE_PORT_ROCKET.z);
+
+      const flameY = 0.1 + rise;
+      this._flameOrigin = this._flameOrigin || new THREE.Vector3();
+      this._flameOrigin.set(SPACE_PORT_ROCKET.x, flameY, SPACE_PORT_ROCKET.z);
 
       if (!this._flames) {
         this._flames = [];
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 14; i++) {
           const flame = new THREE.Mesh(
             new THREE.ConeGeometry(0.15 + Math.random() * 0.2, 0.5 + Math.random() * 0.5, 6),
             new THREE.MeshBasicMaterial({
@@ -144,7 +165,7 @@ export class RocketSystem {
               opacity: 0.8,
             })
           );
-          flame.position.copy(this.player.group.position);
+          flame.position.copy(this._flameOrigin);
           flame.position.y -= 0.5;
           flame.userData = {
             vx: (Math.random() - 0.5) * 2,
@@ -167,7 +188,7 @@ export class RocketSystem {
         f.material.opacity = Math.max(0, ud.life / ud.maxLife) * 0.8;
         f.scale.setScalar(Math.max(0.1, ud.life / ud.maxLife));
         if (ud.life <= 0) {
-          f.position.copy(this.player.group.position);
+          f.position.copy(this._flameOrigin);
           f.position.y -= 0.5;
           ud.vx = (Math.random() - 0.5) * 2;
           ud.vy = -2 - Math.random() * 3;
@@ -257,6 +278,8 @@ export class RocketSystem {
     this.player.velocityY = 0;
     this.player.onGround = true;
 
+    this._resetIslandRocket();
+
     this.isOnMoon = true;
     this.isTransitioning = false;
     this.launchPhase = "";
@@ -274,9 +297,11 @@ export class RocketSystem {
 
     if (this.moonGroup) this.moonGroup.visible = false;
 
-    this.player.group.position.set(-44, 0, 44);
+    this.player.group.position.set(SPACE_PORT_SPAWN.x, 0, SPACE_PORT_SPAWN.z);
     this.player.group.rotation.y = 0;
     this.player.group.scale.set(1, 1, 1);
+    this.player.group.visible = true;
+    this._resetIslandRocket();
 
     if (this._savedBg) this.scene.background = this._savedBg;
     if (this._savedFog) this.scene.fog = this._savedFog;

@@ -25,7 +25,7 @@ import { buildMysteryForest } from "./zones/MysteryForest.js";
 import { buildFruitBeach } from "./zones/FruitBeach.js";
 import { buildJuicePort } from "./zones/JuicePort.js";
 import { buildArena } from "./zones/Arena.js";
-import { buildSpacePort } from "./zones/SpacePort.js";
+import { buildSpacePort, SPACE_PORT } from "./zones/SpacePort.js";
 import { buildMoonBase, MOON_OFFSET } from "./zones/MoonBase.js";
 
 const ISLAND_RADIUS = 60;
@@ -39,6 +39,7 @@ const ZONE_AREAS = [
   { x: 31, z: 23, r: 12 },
   { x: 0, z: 48, r: 18 },
   { x: -41, z: 41, r: 15 },
+  { x: SPACE_PORT.x, z: SPACE_PORT.z, r: 15 },
 ];
 
 function distToSegment(px, pz, seg) {
@@ -64,6 +65,7 @@ export class MapManager {
       { x1: -9.5, z1: -9.5, x2: -23, z2: -19, width: 3, color: 0xd7b98a },
       { x1: 9.5, z1: 9.5, x2: 23, z2: 20, width: 3, color: 0x6f8f5a },
       { x1: 0, z1: 11, x2: 0, z2: 36, width: 4, color: 0xd7b98a },
+      { x1: -2, z1: 12, x2: -15, z2: 13, width: 3.4, color: 0xd7b98a },
       { x1: -8, z1: 19, x2: -31, z2: 33, width: 3, color: 0xc99a63 },
     ];
   }
@@ -87,7 +89,7 @@ export class MapManager {
     buildFruitBeach(scene, ctx);
     buildJuicePort(scene, ctx);
     buildArena(scene, ctx);
-    buildSpacePort(scene, ctx);
+    this.spacePort = buildSpacePort(scene, ctx);
     this.moonData = buildMoonBase(scene, ctx);
 
     for (let i = 0; i < this.paths.length; i++) {

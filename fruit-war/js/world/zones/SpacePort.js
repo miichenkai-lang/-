@@ -1,8 +1,23 @@
-import * as THREE from "three";
+﻿import * as THREE from "three";
 import { mulberry32, createTextBoard } from "../WorldUtils.js";
+
+// Island space port location. Kept well clear of the JuicePlaza fountain at (0, 0)
+// so the rocket stands on its own pad instead of on top of the central fountain.
+export const SPACE_PORT = { x: -19, z: 17 };
+export const SPACE_PORT_BOOTH = { x: SPACE_PORT.x - 8, z: SPACE_PORT.z - 4 };
+export const SPACE_PORT_ROCKET = { x: SPACE_PORT.x, z: SPACE_PORT.z };
+export const SPACE_PORT_SPAWN = { x: -15, z: 12 };
 
 export function buildSpacePort(scene, { animate, collide }) {
   const rand = mulberry32(20261001);
+
+  const root = new THREE.Group();
+  root.position.set(SPACE_PORT.x, 0, SPACE_PORT.z);
+  scene.add(root);
+
+  // All layout coordinates below are local to the space port; translate them
+  // into world space when registering collisions.
+  const place = (x, z, r) => collide(SPACE_PORT.x + x, SPACE_PORT.z + z, r);
 
   const baseMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.7, metalness: 0.3 });
   const metalMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.5, metalness: 0.6 });
@@ -14,22 +29,22 @@ export function buildSpacePort(scene, { animate, collide }) {
   );
   pad.position.set(0, 0.1, 0);
   pad.receiveShadow = true;
-  scene.add(pad);
-  collide(0, 0, 5.5);
+  root.add(pad);
+  place(0, 0, 5.5);
 
   const padMark1 = new THREE.Mesh(
     new THREE.BoxGeometry(0.15, 0.05, 8),
     new THREE.MeshStandardMaterial({ color: 0xffff00 })
   );
   padMark1.position.set(0, 0.22, 0);
-  scene.add(padMark1);
+  root.add(padMark1);
 
   const padMark2 = new THREE.Mesh(
     new THREE.BoxGeometry(8, 0.05, 0.15),
     new THREE.MeshStandardMaterial({ color: 0xffff00 })
   );
   padMark2.position.set(0, 0.22, 0);
-  scene.add(padMark2);
+  root.add(padMark2);
 
   const padRing = new THREE.Mesh(
     new THREE.TorusGeometry(5, 0.08, 8, 32),
@@ -37,11 +52,11 @@ export function buildSpacePort(scene, { animate, collide }) {
   );
   padRing.rotation.x = -Math.PI / 2;
   padRing.position.set(0, 0.22, 0);
-  scene.add(padRing);
+  root.add(padRing);
 
   const rocket = createRocket();
   rocket.position.set(0, 0.2, 0);
-  scene.add(rocket);
+  root.add(rocket);
 
   const landingLights = [];
   for (let i = 0; i < 8; i++) {
@@ -51,7 +66,7 @@ export function buildSpacePort(scene, { animate, collide }) {
       new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 1 })
     );
     ll.position.set(Math.cos(ang) * 5.5, 0.25, Math.sin(ang) * 5.5);
-    scene.add(ll);
+    root.add(ll);
     landingLights.push(ll);
   }
 
@@ -68,8 +83,8 @@ export function buildSpacePort(scene, { animate, collide }) {
   );
   controlTower.position.set(8, 3, -6);
   controlTower.castShadow = true;
-  scene.add(controlTower);
-  collide(8, -6, 1.8);
+  root.add(controlTower);
+  place(8, -6, 1.8);
 
   const towerWindows = new THREE.Mesh(
     new THREE.CylinderGeometry(1.6, 1.6, 1.2, 8, 1, true),
@@ -82,28 +97,28 @@ export function buildSpacePort(scene, { animate, collide }) {
     })
   );
   towerWindows.position.set(8, 5, -6);
-  scene.add(towerWindows);
+  root.add(towerWindows);
 
   const towerRoof = new THREE.Mesh(
     new THREE.ConeGeometry(1.8, 1, 8),
     new THREE.MeshStandardMaterial({ color: 0xff4444, roughness: 0.7 })
   );
   towerRoof.position.set(8, 6.5, -6);
-  scene.add(towerRoof);
+  root.add(towerRoof);
 
   const towerAntenna = new THREE.Mesh(
     new THREE.CylinderGeometry(0.04, 0.04, 2, 6),
     metalMat
   );
   towerAntenna.position.set(8, 7.5, -6);
-  scene.add(towerAntenna);
+  root.add(towerAntenna);
 
   const towerLight = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 8, 6),
     new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0xff3333, emissiveIntensity: 1 })
   );
   towerLight.position.set(8, 8.5, -6);
-  scene.add(towerLight);
+  root.add(towerLight);
 
   animate((elapsed) => {
     towerLight.material.emissiveIntensity = 0.5 + Math.sin(elapsed * 3) * 0.5;
@@ -114,8 +129,8 @@ export function buildSpacePort(scene, { animate, collide }) {
   booth.position.set(-8, 1.4, -4);
   booth.castShadow = true;
   booth.receiveShadow = true;
-  scene.add(booth);
-  collide(-8, -4, 1.5);
+  root.add(booth);
+  place(-8, -4, 1.5);
 
   const boothRoof = new THREE.Mesh(
     new THREE.ConeGeometry(2.2, 1.1, 4),
@@ -123,11 +138,11 @@ export function buildSpacePort(scene, { animate, collide }) {
   );
   boothRoof.position.set(-8, 3.35, -4);
   boothRoof.rotation.y = Math.PI / 4;
-  scene.add(boothRoof);
+  root.add(boothRoof);
 
   const rocketSign = createTextBoard("🚀 月球火箭 $15", 2.8, 1.0, { bg: "#0a0a2e", fg: "#aaddff" });
   rocketSign.position.set(-8, 4.2, -4);
-  scene.add(rocketSign);
+  root.add(rocketSign);
 
   for (const side of [-1, 1]) {
     const windowPane = new THREE.Mesh(
@@ -135,7 +150,7 @@ export function buildSpacePort(scene, { animate, collide }) {
       new THREE.MeshStandardMaterial({ color: 0x88ccff, transparent: true, opacity: 0.5, roughness: 0.1 })
     );
     windowPane.position.set(-8 + side * 0.7, 1.8, -4 + 1.26);
-    scene.add(windowPane);
+    root.add(windowPane);
   }
 
   const benchMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
@@ -145,7 +160,7 @@ export function buildSpacePort(scene, { animate, collide }) {
       benchMat
     );
     bench.position.set(bx, 0.5, bz);
-    scene.add(bench);
+    root.add(bench);
 
     for (const bside of [-0.6, 0.6]) {
       const leg = new THREE.Mesh(
@@ -153,9 +168,9 @@ export function buildSpacePort(scene, { animate, collide }) {
         benchMat
       );
       leg.position.set(bx + bside, 0.25, bz);
-      scene.add(leg);
+      root.add(leg);
     }
-    collide(bx, bz, 0.8);
+    place(bx, bz, 0.8);
   }
 
   const signGroup = new THREE.Group();
@@ -170,8 +185,8 @@ export function buildSpacePort(scene, { animate, collide }) {
   signGroup.add(board);
   signGroup.position.set(-12, 0, 6);
   signGroup.rotation.y = 0.5;
-  scene.add(signGroup);
-  collide(-12, 6, 0.35);
+  root.add(signGroup);
+  place(-12, 6, 0.35);
 
   const pathMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.9 });
   for (let i = 0; i < 8; i++) {
@@ -180,7 +195,7 @@ export function buildSpacePort(scene, { animate, collide }) {
       pathMat
     );
     path.position.set(-6 + i * 2, 0.03, -4);
-    scene.add(path);
+    root.add(path);
   }
 
   for (let i = 0; i < 5; i++) {
@@ -190,9 +205,9 @@ export function buildSpacePort(scene, { animate, collide }) {
     );
     barrel.position.set(10 + i * 0.9, 0.4, 2);
     barrel.castShadow = true;
-    scene.add(barrel);
+    root.add(barrel);
   }
-  collide(10, 2, 0.5);
+  place(10, 2, 0.5);
 
   const solarMat = new THREE.MeshStandardMaterial({ color: 0x2244aa, metalness: 0.6, roughness: 0.3 });
   for (const side of [-1, 1]) {
@@ -202,15 +217,17 @@ export function buildSpacePort(scene, { animate, collide }) {
     );
     panel.position.set(12, 2, -8 + side * 3);
     panel.rotation.z = side * 0.3;
-    scene.add(panel);
+    root.add(panel);
 
     const pole = new THREE.Mesh(
       new THREE.CylinderGeometry(0.05, 0.05, 2, 6),
       baseMat
     );
     pole.position.set(12, 1, -8 + side * 3);
-    scene.add(pole);
+    root.add(pole);
   }
+
+  return { rocket, pad };
 }
 
 function createRocket() {

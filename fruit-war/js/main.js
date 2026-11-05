@@ -114,6 +114,9 @@ function boot() {
   if (map.moonData) {
     rocket.setMoonData(map.moonData, map.moonData.group);
   }
+  if (map.spacePort && map.spacePort.rocket) {
+    rocket.setIslandRocket(map.spacePort.rocket);
+  }
 
   const moonNpcObjs = MOON_NPCS.map((def) => new MoonNpc(def));
   for (const npc of moonNpcObjs) {
